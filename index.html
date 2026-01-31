@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lab rats</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Syne:wght@400;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Mars / warm civilization palette */
+      --paper: #E6E2D6;
+      --paper-dark: #D4CFC3;
+      --ink: #121212;
+      --rust: #C85228;
+      --terra: #2A5A42;
+      --gold: #D4A044;
+      --muted: #7a7468;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: 'Syne', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* 3D Canvas */
+    #canvas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .ui-layer {
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: linear-gradient(to bottom, rgba(230,226,214,0.95), transparent);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--rust);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .hero-title {
+      font-family: 'Abril Fatface', serif;
+      font-size: clamp(5rem, 15vw, 14rem);
+      line-height: 0.85;
+      letter-spacing: -0.04em;
+      margin-bottom: 1rem;
+      mix-blend-mode: difference;
+    }
+
+    .pill-cluster {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .pill {
+      border: 1.5px solid var(--ink);
+      padding: 6px 20px;
+      border-radius: 50px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      background: transparent;
+      color: var(--ink);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .pill:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .pill.accent {
+      border-color: var(--rust);
+      color: var(--rust);
+    }
+
+    .pill.accent:hover {
+      background: var(--rust);
+      color: var(--paper);
+    }
+
+    .data-block {
+      position: absolute;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--ink);
+      max-width: 200px;
+    }
+
+    .data-block .label {
+      color: var(--muted);
+      font-size: 0.7rem;
+    }
+
+    .data-block .value {
+      color: var(--rust);
+      font-weight: bold;
+    }
+
+    .data-block .status {
+      margin-top: 1rem;
+      padding: 4px 12px;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      display: inline-block;
+      font-size: 0.7rem;
+    }
+
+    .data-tl { top: 18%; left: 5%; text-align: left; }
+
+    /* Q2 2026 prominent badge */
+    .date-badge {
+      position: absolute;
+      top: 18%;
+      right: 5%;
+      text-align: right;
+    }
+
+    .date-badge .year {
+      font-family: 'Abril Fatface', serif;
+      font-size: 3rem;
+      color: var(--ink);
+      line-height: 1;
+    }
+
+    .date-badge .quarter {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--terra);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Backers section */
+    .backers-section {
+      border-top: 1.5px solid var(--ink);
+      border-bottom: 1.5px solid var(--ink);
+      padding: 4rem 2rem;
+      text-align: center;
+      background: var(--paper-dark);
+    }
+
+    .backers-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 2rem;
+    }
+
+    .backers-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .backer-logo {
+      opacity: 0.7;
+      transition: opacity 0.3s;
+      height: 32px;
+    }
+
+    .backer-logo:hover {
+      opacity: 1;
+    }
+
+    .backer-logo img {
+      height: 100%;
+      width: auto;
+    }
+
+    .backers-cta {
+      margin-top: 2rem;
+    }
+
+    .backers-cta a {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--rust);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rust);
+      padding-bottom: 2px;
+      transition: all 0.3s;
+    }
+
+    .backers-cta a:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    /* Video Section */
+    .video-section {
+      padding: 4rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .video-placeholder {
+      aspect-ratio: 16/9;
+      background: var(--rust);
+      border: 1.5px solid var(--ink);
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .video-placeholder:hover .play-btn {
+      transform: scale(1.1);
+    }
+
+    .play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      border: 2px solid var(--paper);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s;
+      background: rgba(0,0,0,0.2);
+    }
+
+    .play-btn svg {
+      width: 30px;
+      height: 30px;
+      fill: var(--paper);
+      margin-left: 4px;
+    }
+
+    .surveillance-corner {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-color: var(--paper);
+      border-style: solid;
+      border-width: 0;
+    }
+
+    .surveillance-corner.tl { top: 10px; left: 10px; border-top-width: 2px; border-left-width: 2px; }
+    .surveillance-corner.tr { top: 10px; right: 10px; border-top-width: 2px; border-right-width: 2px; }
+    .surveillance-corner.bl { bottom: 10px; left: 10px; border-bottom-width: 2px; border-left-width: 2px; }
+    .surveillance-corner.br { bottom: 10px; right: 10px; border-bottom-width: 2px; border-right-width: 2px; }
+
+    .rec-indicator {
+      position: absolute;
+      top: 12px;
+      right: 40px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--paper);
+    }
+
+    .rec-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--paper);
+      border-radius: 50%;
+      animation: pulse 1s infinite;
+    }
+
+    /* Section base */
+    section {
+      padding: 6rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--terra);
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-family: 'Abril Fatface', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+    }
+
+    /* Manifesto */
+    .manifesto {
+      border-top: 1.5px solid var(--ink);
+      border-bottom: 1.5px solid var(--ink);
+      background: var(--paper-dark);
+    }
+
+    .manifesto-content {
+      max-width: 800px;
+    }
+
+    .manifesto-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--muted);
+    }
+
+    .manifesto-text strong {
+      color: var(--ink);
+    }
+
+    /* Builders Section */
+    .builders-section {
+      border-bottom: 1.5px solid var(--ink);
+    }
+
+    .builders-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    @media (max-width: 900px) {
+      .builders-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .builders-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .builder-card {
+      text-align: center;
+    }
+
+    .builder-photo {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, var(--paper-dark), #c4bfb3);
+      border: 1.5px solid var(--ink);
+      margin-bottom: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .builder-photo::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='35' r='18' fill='%23a09888'/%3E%3Cellipse cx='50' cy='80' rx='25' ry='20' fill='%23a09888'/%3E%3C/svg%3E") center/60% no-repeat;
+      filter: blur(8px);
+      opacity: 0.6;
+    }
+
+    .builder-photo::after {
+      content: '?';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Abril Fatface', serif;
+      font-size: 2.5rem;
+      color: #a09888;
+    }
+
+    .builder-name {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .builder-status {
+      font-size: 0.7rem;
+      color: var(--gold);
+      margin-top: 0.25rem;
+    }
+
+    /* How it works */
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    @media (max-width: 768px) {
+      .how-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .how-card {
+      border: 1.5px solid var(--ink);
+      padding: 2rem;
+      background: var(--paper);
+    }
+
+    .how-number {
+      font-family: 'Abril Fatface', serif;
+      font-size: 4rem;
+      color: var(--paper-dark);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+
+    .how-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .how-card p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Token Section */
+    .token-section {
+      border-top: 1.5px solid var(--ink);
+    }
+
+    .token-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      margin-top: 3rem;
+    }
+
+    @media (max-width: 768px) {
+      .token-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .pie-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .pie-legend {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem 2rem;
+      font-size: 0.85rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+    }
+
+    .legend-label {
+      color: var(--muted);
+    }
+
+    .legend-value {
+      font-weight: bold;
+      margin-left: auto;
+    }
+
+    .mechanic {
+      padding-left: 1rem;
+      border-left: 2px solid var(--terra);
+      margin-bottom: 1.5rem;
+    }
+
+    .mechanic.red { border-color: var(--rust); }
+    .mechanic.amber { border-color: var(--gold); }
+    .mechanic.muted { border-color: var(--muted); }
+
+    .mechanic h4 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .mechanic p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* Budget banner */
+    .budget-banner {
+      background: var(--terra);
+      border-top: 1.5px solid var(--ink);
+      border-bottom: 1.5px solid var(--ink);
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .budget-amount {
+      font-family: 'Abril Fatface', serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      color: var(--paper);
+      margin-bottom: 1rem;
+    }
+
+    .budget-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--paper);
+      opacity: 0.8;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      text-align: center;
+      padding: 8rem 2rem;
+    }
+
+    .cta-form {
+      display: flex;
+      gap: 1rem;
+      max-width: 400px;
+      margin: 2rem auto 0;
+    }
+
+    .cta-form input {
+      flex: 1;
+      padding: 1rem;
+      background: var(--paper);
+      border: 1.5px solid var(--ink);
+      color: var(--ink);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+    }
+
+    .cta-form input::placeholder {
+      color: var(--muted);
+    }
+
+    .cta-form input:focus {
+      outline: none;
+      border-color: var(--rust);
+    }
+
+    .cta-form button {
+      padding: 1rem 2rem;
+      background: var(--ink);
+      border: none;
+      color: var(--paper);
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+
+    .cta-form button:hover {
+      opacity: 0.8;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .social-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .social-links a:hover {
+      color: var(--ink);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1.5px solid var(--ink);
+      padding: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Grunge footer band */
+    .grunge-band {
+      height: 120px;
+      background: var(--rust);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .grunge-band::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--terra);
+      clip-path: polygon(
+        0% 0%, 8% 30%, 15% 10%, 25% 40%, 35% 20%,
+        45% 50%, 55% 25%, 65% 45%, 75% 15%, 85% 35%,
+        95% 5%, 100% 30%, 100% 100%, 0% 100%
+      );
+    }
+
+    .grunge-content {
+      position: absolute;
+      bottom: 1rem;
+      left: 2rem;
+      right: 2rem;
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--paper);
+    }
+  </style>
+</head>
+<body>
+  <!-- 3D Background -->
+  <div id="canvas-container"></div>
+
+  <div class="ui-layer">
+    <!-- Navigation -->
+    <nav>
+      <div class="brand">
+        <div class="status-dot"></div>
+        <span>lab rats // experiment 001</span>
+      </div>
+      <div class="nav-links">
+        <a href="#manifesto">manifesto</a>
+        <a href="#builders">builders</a>
+        <a href="#token">$lab</a>
+        <a href="#backers">sponsors</a>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="data-block data-tl">
+        <span class="label">subjects:</span> <span class="value">10</span><br>
+        <span class="label">duration:</span> <span class="value">14 days</span><br>
+        <span class="label">objective:</span> <span class="value">$100k</span><br>
+        <div class="status">experiment pending</div>
+      </div>
+
+      <h1 class="hero-title">lab rats</h1>
+
+      <div class="pill-cluster">
+        <a href="#token" class="pill accent">$lab token</a>
+        <a href="#builders" class="pill">10 builders</a>
+        <a href="#backers" class="pill">become a sponsor</a>
+      </div>
+
+      <div class="date-badge">
+        <div class="quarter">launching</div>
+        <div class="year">Q2</div>
+        <div class="year">2026</div>
+      </div>
+    </section>
+
+    <!-- Video Section -->
+    <div class="video-section">
+      <div class="video-placeholder">
+        <div class="play-btn">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <div class="surveillance-corner tl"></div>
+        <div class="surveillance-corner tr"></div>
+        <div class="surveillance-corner bl"></div>
+        <div class="surveillance-corner br"></div>
+        <div class="rec-indicator">
+          <div class="rec-dot"></div>
+          rec
+        </div>
+      </div>
+    </div>
+
+    <!-- Manifesto -->
+    <section id="manifesto" class="manifesto">
+      <div class="manifesto-content">
+        <div class="section-label">// the experiment</div>
+        <h2>this is not entertainment.<br>this is research.</h2>
+        <div class="manifesto-text">
+          <p style="margin-bottom: 1.5rem;">
+            <strong>lab rats is a controlled experiment in human psychology, speculation, ambition, and power.</strong>
+          </p>
+          <p style="margin-bottom: 1.5rem;">
+            what happens when you put 10 builders in a pressure cooker — give them 14 days, limited resources, and a singular mission: generate $100,000 in real revenue or be eliminated?
+          </p>
+          <p style="margin-bottom: 1.5rem;">
+            we're not building a reality show. we're running a live simulation of founder psychology under extreme conditions. the $lab token isn't just speculation — it's a mechanism for the audience to directly influence outcomes through economic action. burn enough tokens, eliminate a competitor. the crowd becomes the invisible hand.
+          </p>
+          <p style="margin-bottom: 1.5rem;">
+            this is <strong>education disguised as chaos</strong>. every builder's journey — their wins, their breakdowns, their pivots at 3am — becomes a case study for the next generation of solo founders. we're documenting what it actually takes to build a one-person business from zero to revenue in public.
+          </p>
+          <p>
+            <strong>the goal isn't to crown a winner. it's to expose the truth about building.</strong> the pain, the luck, the skill, the politics of attention. all of it, unfiltered.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Builders -->
+    <section id="builders" class="builders-section">
+      <div class="section-label">// the subjects</div>
+      <h2>10 builders. identities classified.</h2>
+      <p style="color: var(--muted); max-width: 600px;">
+        applications are open. builders will be revealed closer to launch.
+        each enters with $500 and 14 days to prove themselves.
+      </p>
+
+      <div class="builders-grid">
+        <div class="builder-card">
+          <div class="builder-photo"></div>
+          <div class="builder-name">subject 01</div>
+          <div class="builder-status">tba</div>
+        </div>
+        <div class="builder-card">
+          <div class="builder-photo"></div>
+          <div class="builder-name">subject 02</div>
+          <div class="builder-status">tba</div>
+        </div>
+        <div class="builder-card">
+          <div class="builder-photo"></div>
+          <div class="builder-name">subject 03</div>
+          <div class="builder-status">tba</div>
+        </div>
+        <div class="builder-card">
+          <div class="builder-photo"></div>
+          <div class="builder-name">subject 04</div>
+          <div class="builder-status">tba</div>
+        </div>
+        <div class="builder-card">
+          <div class="builder-photo"></div>
+          <div class="builder-name">subject 05</div>
+          <div class="builder-status">tba</div>
+        </div>
+        <div class="builder-card">
+          <div class="builder-photo"></div>
+          <div class="builder-name">subject 06</div>
+          <div class="builder-status">tba</div>
+        </div>
+        <div class="builder-card">
+          <div class="builder-photo"></div>
+          <div class="builder-name">subject 07</div>
+          <div class="builder-status">tba</div>
+        </div>
+        <div class="builder-card">
+          <div class="builder-photo"></div>
+          <div class="builder-name">subject 08</div>
+          <div class="builder-status">tba</div>
+        </div>
+        <div class="builder-card">
+          <div class="builder-photo"></div>
+          <div class="builder-name">subject 09</div>
+          <div class="builder-status">tba</div>
+        </div>
+        <div class="builder-card">
+          <div class="builder-photo"></div>
+          <div class="builder-name">subject 10</div>
+          <div class="builder-status">tba</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section>
+      <div class="section-label">// the protocol</div>
+      <h2>how it works</h2>
+
+      <div class="how-grid">
+        <div class="how-card">
+          <div class="how-number">01</div>
+          <h3>10 builders enter</h3>
+          <p>
+            solo founders, hackers, and degens compete head-to-head.
+            each has $500 for tools. build anything — ai agents, saas,
+            arbitrage bots, tokenized products. real revenue only.
+          </p>
+        </div>
+        <div class="how-card">
+          <div class="how-number">02</div>
+          <h3>$lab controls fate</h3>
+          <p>
+            the audience holds power. burn 5% of $lab supply against
+            any builder to eliminate them. once threshold hits, they're
+            out. tokens burned forever. no appeals.
+          </p>
+        </div>
+        <div class="how-card">
+          <div class="how-number">03</div>
+          <h3>$100k or nothing</h3>
+          <p>
+            14 days to hit $100k in real revenue. no fake metrics.
+            no vanity numbers. stripe receipts or gtfo.
+            survival is the only metric that matters.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Token -->
+    <section id="token" class="token-section">
+      <div class="section-label">// the mechanism</div>
+      <h2>$lab: burn to eliminate</h2>
+      <p style="color: var(--muted); max-width: 600px; margin-bottom: 2rem;">
+        $lab is not an investment. it's a 14-day game. the token dies when
+        the experiment ends. pure speculation. pure power.
+      </p>
+
+      <div class="token-grid">
+        <div class="pie-container">
+          <svg viewBox="0 0 100 100" width="200" height="200">
+            <!-- 40% public - terra green -->
+            <path d="M 50 50 L 50 10 A 40 40 0 0 1 88.28 70 Z" fill="#2A5A42"/>
+            <!-- 25% liquidity - gold -->
+            <path d="M 50 50 L 88.28 70 A 40 40 0 0 1 21.72 70 Z" fill="#D4A044"/>
+            <!-- 20% challenges - rust -->
+            <path d="M 50 50 L 21.72 70 A 40 40 0 0 1 10 50 Z" fill="#C85228"/>
+            <!-- 10% team - dark -->
+            <path d="M 50 50 L 10 50 A 40 40 0 0 1 21.72 30 Z" fill="#121212"/>
+            <!-- 5% reserve - muted -->
+            <path d="M 50 50 L 21.72 30 A 40 40 0 0 1 50 10 Z" fill="#7a7468"/>
+            <circle cx="50" cy="50" r="20" fill="#E6E2D6"/>
+            <text x="50" y="52" text-anchor="middle" fill="#121212" font-size="7" font-family="Space Mono, monospace">$lab</text>
+          </svg>
+          <div class="pie-legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background: #2A5A42;"></div>
+              <span class="legend-label">public sale</span>
+              <span class="legend-value">40%</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: #D4A044;"></div>
+              <span class="legend-label">liquidity</span>
+              <span class="legend-value">25%</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: #C85228;"></div>
+              <span class="legend-label">challenges</span>
+              <span class="legend-value">20%</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: #121212;"></div>
+              <span class="legend-label">team</span>
+              <span class="legend-value">10%</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: #7a7468;"></div>
+              <span class="legend-label">reserve</span>
+              <span class="legend-value">5%</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="mechanic">
+            <h4>earn through challenges</h4>
+            <p>daily challenges reward $lab to builders and viewers. complete tasks, earn tokens, gain power.</p>
+          </div>
+          <div class="mechanic red">
+            <h4>burn to kick</h4>
+            <p>allocate $lab to any builder's elimination counter. when 5% of supply is reached, they're out. tokens burned permanently.</p>
+          </div>
+          <div class="mechanic amber">
+            <h4>speculate on outcomes</h4>
+            <p>trade $lab on dex. price reflects collective sentiment on who survives, who ships, who gets burned.</p>
+          </div>
+          <div class="mechanic muted">
+            <h4>token dies on day 14</h4>
+            <p>this is explicit. $lab has no utility after the experiment ends. don't expect anything. play the game.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Budget Banner -->
+    <div class="budget-banner">
+      <div class="budget-amount">$500,000</div>
+      <div class="budget-label">experiment budget</div>
+    </div>
+
+    <!-- Backers -->
+    <section id="backers" class="backers-section">
+      <div class="backers-label">backed by</div>
+      <div class="backers-logos">
+        <a href="https://noice.so" target="_blank" class="backer-logo">
+          <img src="https://noice.so/noice-logo-white.svg" alt="noice" onerror="this.parentElement.innerHTML='<span style=font-family:Abril\ Fatface;font-size:1.5rem>noice</span>'">
+        </a>
+        <a href="https://localhosthq.com" target="_blank" class="backer-logo">
+          <img src="https://localhosthq.com/logo.svg" alt="localhost" onerror="this.parentElement.innerHTML='<span style=font-family:Abril\ Fatface;font-size:1.5rem>localhost</span>'">
+        </a>
+      </div>
+      <div class="backers-cta">
+        <a href="mailto:tk@noice.so?subject=Lab%20Rats%20Sponsorship">want your logo here? become a sponsor →</a>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <div class="section-label">// join the experiment</div>
+      <h2>get early access</h2>
+      <p style="color: var(--muted);">
+        be first to know when applications open.<br>
+        builders and spectators welcome.
+      </p>
+
+      <form class="cta-form" onsubmit="event.preventDefault(); this.innerHTML = '<span style=color:var(--terra)>you\'re on the list.</span>';">
+        <input type="email" placeholder="enter your email" required>
+        <button type="submit">submit</button>
+      </form>
+
+      <div class="social-links">
+        <a href="https://t.me/labrats" target="_blank">telegram</a>
+        <a href="https://x.com/labratsshow" target="_blank">x / twitter</a>
+        <a href="https://youtube.com/@labrats" target="_blank">youtube</a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-brand">
+        <div class="status-dot"></div>
+        <span>lab rats</span>
+        <span style="color: var(--muted);">|</span>
+        <span>a noice.so experiment</span>
+      </div>
+      <div>this is chaos, not financial advice.</div>
+    </footer>
+
+    <!-- Grunge band -->
+    <div class="grunge-band">
+      <div class="grunge-content">
+        <div>experiment 001<br>status: pending</div>
+        <div style="text-align: right;">q2 2026<br>location: tbd</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Three.js 3D Sphere -->
+  <script>
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xE6E2D6);
+
+    const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 12;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    // Shader material for the sphere
+    const vertexShader = `
+      varying vec2 vUv;
+      varying vec3 vNormal;
+      varying vec3 vPosition;
+
+      void main() {
+        vUv = uv;
+        vNormal = normalize(normalMatrix * normal);
+        vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+
+    const fragmentShader = `
+      uniform float time;
+      varying vec2 vUv;
+      varying vec3 vNormal;
+      varying vec3 vPosition;
+
+      // Simplex noise
+      vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+      vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+      vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+      vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+      float snoise(vec3 v) {
+        const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+        const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+        vec3 i = floor(v + dot(v, C.yyy));
+        vec3 x0 = v - i + dot(i, C.xxx);
+        vec3 g = step(x0.yzx, x0.xyz);
+        vec3 l = 1.0 - g;
+        vec3 i1 = min(g.xyz, l.zxy);
+        vec3 i2 = max(g.xyz, l.zxy);
+        vec3 x1 = x0 - i1 + C.xxx;
+        vec3 x2 = x0 - i2 + C.yyy;
+        vec3 x3 = x0 - D.yyy;
+        i = mod289(i);
+        vec4 p = permute(permute(permute(i.z + vec4(0.0, i1.z, i2.z, 1.0)) + i.y + vec4(0.0, i1.y, i2.y, 1.0)) + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+        float n_ = 0.142857142857;
+        vec3 ns = n_ * D.wyz - D.xzx;
+        vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+        vec4 x_ = floor(j * ns.z);
+        vec4 y_ = floor(j - 7.0 * x_);
+        vec4 x = x_ * ns.x + ns.yyyy;
+        vec4 y = y_ * ns.x + ns.yyyy;
+        vec4 h = 1.0 - abs(x) - abs(y);
+        vec4 b0 = vec4(x.xy, y.xy);
+        vec4 b1 = vec4(x.zw, y.zw);
+        vec4 s0 = floor(b0) * 2.0 + 1.0;
+        vec4 s1 = floor(b1) * 2.0 + 1.0;
+        vec4 sh = -step(h, vec4(0.0));
+        vec4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
+        vec4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+        vec3 p0 = vec3(a0.xy, h.x);
+        vec3 p1 = vec3(a0.zw, h.y);
+        vec3 p2 = vec3(a1.xy, h.z);
+        vec3 p3 = vec3(a1.zw, h.w);
+        vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+        p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
+        vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+        m = m * m;
+        return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+      }
+
+      void main() {
+        vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
+        float lightIntensity = dot(vNormal, lightDir);
+
+        vec3 pos = vPosition;
+        float angle = time * 0.1;
+        mat3 rotY = mat3(cos(angle), 0.0, sin(angle), 0.0, 1.0, 0.0, -sin(angle), 0.0, cos(angle));
+        vec3 noisePos = rotY * pos * 2.0;
+        float noiseVal = snoise(noisePos);
+
+        // Mars palette
+        vec3 paper = vec3(0.9, 0.886, 0.839);
+        vec3 rust = vec3(0.784, 0.322, 0.157);
+        vec3 terra = vec3(0.165, 0.353, 0.259);
+        vec3 gold = vec3(0.831, 0.627, 0.267);
+
+        vec3 finalColor = paper * 0.95;
+
+        if (noiseVal > 0.15) {
+          finalColor = rust;
+        } else if (noiseVal < -0.15) {
+          finalColor = terra;
+        }
+
+        // Rim lighting
+        float viewDot = dot(normalize(vNormal), vec3(0.0, 0.0, 1.0));
+        if (viewDot < 0.25 && viewDot > 0.0) {
+          finalColor = mix(finalColor, vec3(0.07), 0.8);
+        }
+
+        gl_FragColor = vec4(finalColor, 1.0);
+      }
+    `;
+
+    const uniforms = { time: { value: 0 } };
+
+    const geometry = new THREE.IcosahedronGeometry(3.5, 30);
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms
+    });
+
+    const sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
+
+    // Mouse interaction
+    let mouseX = 0, mouseY = 0;
+    document.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX - window.innerWidth / 2) * 0.001;
+      mouseY = (e.clientY - window.innerHeight / 2) * 0.001;
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      uniforms.time.value += 0.01;
+      sphere.rotation.y += 0.002;
+      sphere.rotation.y += (mouseX - sphere.rotation.y * 0.5) * 0.02;
+      sphere.rotation.x += (mouseY - sphere.rotation.x * 0.5) * 0.02;
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

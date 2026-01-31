@@ -88,6 +88,15 @@
       position: relative;
     }
 
+    @media (max-width: 768px) {
+      .hero {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 8rem;
+      }
+    }
+
     .hero-title {
       font-family: 'Abril Fatface', serif;
       font-size: clamp(4rem, 12vw, 12rem);
@@ -369,6 +378,277 @@
       font-size: 0.75rem;
       text-transform: uppercase;
       color: var(--paper);
+    }
+
+    /* ==================== MOBILE OPTIMIZATIONS ==================== */
+
+    /* Mobile navigation */
+    @media (max-width: 768px) {
+      nav {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 0.75rem;
+        background: rgba(230,226,214,0.98);
+      }
+      .nav-links {
+        gap: 1rem;
+        font-size: 0.65rem;
+      }
+    }
+
+    /* Mobile hero */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 6rem 1.5rem 3rem;
+        min-height: auto;
+      }
+      .hero-title {
+        font-size: clamp(3rem, 15vw, 5rem);
+        margin-bottom: 0.5rem;
+      }
+
+      /* Reposition data blocks for mobile */
+      .data-block {
+        position: relative;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        max-width: 100%;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+      }
+      .data-block .value {
+        font-size: 1rem;
+      }
+      .data-tl {
+        order: -1;
+      }
+
+      .date-badge {
+        position: relative;
+        top: auto !important;
+        right: auto !important;
+        text-align: center;
+        margin-top: 2rem;
+      }
+      .date-badge .year {
+        font-size: 2.5rem;
+        display: inline;
+      }
+      .date-badge .quarter {
+        font-size: 0.75rem;
+      }
+
+      .pill-cluster {
+        gap: 8px;
+      }
+      .pill {
+        padding: 6px 14px;
+        font-size: 0.75rem;
+      }
+    }
+
+    /* Mobile video section */
+    @media (max-width: 768px) {
+      .video-section {
+        padding: 2rem 1rem;
+      }
+      .play-btn {
+        width: 60px;
+        height: 60px;
+      }
+      .play-btn svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    /* Mobile sections */
+    @media (max-width: 768px) {
+      section {
+        padding: 3rem 1.5rem;
+      }
+      h2 {
+        font-size: clamp(1.5rem, 6vw, 2rem);
+      }
+      .section-label {
+        font-size: 0.7rem;
+      }
+    }
+
+    /* Mobile manifesto */
+    @media (max-width: 768px) {
+      .manifesto {
+        padding: 3rem 1.5rem;
+      }
+      .manifesto-text {
+        font-size: 1rem;
+        line-height: 1.7;
+      }
+    }
+
+    /* Mobile builders */
+    @media (max-width: 480px) {
+      .builders-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+      .builder-photo::after {
+        font-size: 2rem;
+      }
+      .builder-name {
+        font-size: 0.7rem;
+      }
+    }
+
+    /* Mobile how it works */
+    @media (max-width: 768px) {
+      .how-section {
+        padding: 3rem 1.5rem;
+      }
+      .how-grid {
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+      .how-card {
+        padding: 1.5rem;
+      }
+      .how-number {
+        font-size: 3rem;
+      }
+      .how-card h3 {
+        font-size: 1.1rem;
+      }
+    }
+
+    /* Mobile token section */
+    @media (max-width: 768px) {
+      .token-section {
+        padding: 3rem 1.5rem;
+      }
+      .token-grid {
+        gap: 2.5rem;
+        margin-top: 2rem;
+      }
+      .pie-container svg {
+        width: 160px;
+        height: 160px;
+      }
+      .pie-legend {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+      .mechanic {
+        padding-left: 0.75rem;
+        margin-bottom: 1.25rem;
+      }
+      .mechanic h4 {
+        font-size: 0.95rem;
+      }
+      .mechanic p {
+        font-size: 0.85rem;
+      }
+    }
+
+    /* Mobile sponsors */
+    @media (max-width: 768px) {
+      .sponsors-section {
+        padding: 3rem 1.5rem;
+      }
+      .sponsors-amount {
+        font-size: clamp(2rem, 10vw, 3rem);
+      }
+      .sponsors-label {
+        font-size: 0.75rem;
+        margin-bottom: 2rem;
+      }
+      .sponsors-grid {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+      }
+      .sponsor-card,
+      .sponsor-cta-card {
+        min-width: auto;
+        padding: 1.5rem;
+      }
+      .sponsor-logo {
+        font-size: 1.5rem;
+      }
+      .sponsor-cta-card .question {
+        font-size: 2.5rem;
+      }
+    }
+
+    /* Mobile follow section */
+    @media (max-width: 768px) {
+      .follow-section {
+        padding: 3rem 1.5rem;
+      }
+      .twitter-embed {
+        padding: 1.5rem;
+        margin: 1.5rem auto;
+      }
+      .twitter-avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+      }
+      .twitter-handle {
+        font-size: 1rem;
+      }
+      .twitter-desc {
+        font-size: 0.85rem;
+      }
+      .twitter-btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.9rem;
+      }
+      .follow-note {
+        font-size: 0.75rem;
+      }
+    }
+
+    /* Mobile footer */
+    @media (max-width: 768px) {
+      footer {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+        padding: 1.5rem 1rem;
+      }
+      .footer-brand {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+
+    /* Mobile grunge band */
+    @media (max-width: 768px) {
+      .grunge-band {
+        height: 100px;
+      }
+      .grunge-content {
+        left: 1rem;
+        right: 1rem;
+        font-size: 0.65rem;
+      }
+    }
+
+    /* Extra small screens */
+    @media (max-width: 360px) {
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      .nav-links {
+        gap: 0.5rem;
+        font-size: 0.6rem;
+      }
+      .pill {
+        padding: 5px 10px;
+        font-size: 0.65rem;
+      }
     }
   </style>
 </head>

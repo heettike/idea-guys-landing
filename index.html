@@ -56,7 +56,10 @@
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      background: linear-gradient(to bottom, rgba(230,226,214,0.95), transparent);
+      background: rgba(230,226,214,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
     }
 
     .brand { display: flex; align-items: center; gap: 8px; }
@@ -88,21 +91,23 @@
       position: relative;
     }
 
-    @media (max-width: 768px) {
-      .hero { justify-content: flex-start; padding-top: 8rem; }
-    }
-
     .hero-title {
       font-family: 'Abril Fatface', serif;
-      font-size: clamp(4rem, 12vw, 12rem);
+      font-size: clamp(4rem, 12vw, 14rem);
       line-height: 0.9;
       letter-spacing: -0.04em;
       margin-bottom: 1rem;
-      color: var(--beige);
-      text-shadow: 2px 2px 0 var(--paper), 4px 4px 0 rgba(0,0,0,0.1);
+      color: var(--ink);
+      mix-blend-mode: multiply;
     }
 
-    .pill-cluster { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 1rem; }
+    .pill-cluster {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 1rem;
+    }
 
     .pill {
       border: 2px solid var(--ink);
@@ -123,29 +128,69 @@
     .data-block {
       position: absolute;
       font-family: 'Space Mono', monospace;
-      font-size: 0.85rem;
-      line-height: 2.2;
+      font-size: 0.8rem;
+      line-height: 2;
       color: var(--ink);
-      max-width: 260px;
+      max-width: 220px;
     }
-    .data-block .data-row { margin-bottom: 1rem; }
-    .data-block .label { color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; display: block; }
-    .data-block .value { color: var(--ink); font-weight: bold; font-size: 0.9rem; display: block; margin-top: 0.15rem; }
+    .data-block .data-row { margin-bottom: 0.75rem; }
+    .data-block .label { color: var(--muted); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+    .data-block .value { color: var(--ink); font-weight: bold; font-size: 0.85rem; display: block; margin-top: 0.1rem; }
     .data-block .status {
-      margin-top: 1.5rem;
-      padding: 6px 14px;
+      margin-top: 1rem;
+      padding: 5px 12px;
       border: 1.5px solid var(--gold);
       color: var(--gold);
       display: inline-block;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
-    .data-tl { top: 50%; left: 1.5rem; transform: translateY(-50%); text-align: left; }
+    .data-tl { top: 50%; left: 2rem; transform: translateY(-50%); text-align: left; }
 
-    .date-badge { position: absolute; top: 16%; right: 5%; text-align: right; }
-    .date-badge .year { font-family: 'Abril Fatface', serif; font-size: 3.5rem; color: var(--ink); line-height: 1; }
-    .date-badge .quarter { font-family: 'Space Mono', monospace; font-size: 0.85rem; color: var(--terra); text-transform: uppercase; letter-spacing: 0.1em; }
+    .date-badge { position: absolute; top: 20%; right: 3%; text-align: right; }
+    .date-badge .year { font-family: 'Abril Fatface', serif; font-size: 3rem; color: var(--ink); line-height: 0.9; }
+    .date-badge .quarter { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--terra); text-transform: uppercase; letter-spacing: 0.1em; }
+
+    /* ========== HERO RESPONSIVE ========== */
+    @media (min-width: 1400px) {
+      .hero-title { font-size: 14rem; }
+      .data-block { font-size: 0.85rem; max-width: 260px; }
+      .data-tl { left: 3rem; }
+      .date-badge { right: 4%; }
+      .date-badge .year { font-size: 4rem; }
+    }
+
+    @media (max-width: 1024px) {
+      .hero-title { font-size: clamp(3.5rem, 11vw, 10rem); }
+      .data-block { font-size: 0.75rem; max-width: 200px; }
+      .date-badge .year { font-size: 2.5rem; }
+    }
+
+    @media (max-width: 768px) {
+      .hero { justify-content: flex-start; padding-top: 6rem; min-height: auto; padding-bottom: 2rem; }
+      .hero-title { font-size: clamp(3rem, 15vw, 5rem); margin-bottom: 0.5rem; }
+      .data-block {
+        position: relative;
+        top: auto !important; left: auto !important; right: auto !important;
+        transform: none !important;
+        max-width: 100%;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        background: var(--paper);
+        padding: 1rem;
+        border-top: 2px solid var(--rust);
+      }
+      .data-tl { order: -1; }
+      .date-badge {
+        position: relative;
+        top: auto !important; right: auto !important;
+        text-align: center;
+        margin-top: 1.5rem;
+      }
+      .date-badge .year { font-size: 2rem; display: inline; }
+      .pill { padding: 6px 16px; font-size: 0.75rem; }
+    }
 
     /* Video Section */
     .video-section { padding: 4rem 2rem; max-width: 1000px; margin: 0 auto; }
@@ -331,6 +376,65 @@
     .btn-arena::after { content: '\2192'; position: absolute; right: 1.2rem; opacity: 0; transform: translateX(-10px); transition: all 0.3s ease; }
     .btn-arena:hover::after { opacity: 1; transform: translateX(0); }
 
+    /* Proof builders inline */
+    .proof-builders {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    .proof-builder {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem;
+      background: var(--paper);
+      border: 1px solid rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .proof-builder:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+    .proof-builder:hover .proof-name,
+    .proof-builder:hover .proof-product,
+    .proof-builder:hover .proof-revenue { color: var(--paper); }
+    .proof-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--paper-dark);
+    }
+    .proof-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .proof-info {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .proof-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--ink);
+    }
+    .proof-product {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+    .proof-revenue {
+      font-family: 'Anton', sans-serif;
+      font-size: 1rem;
+      color: var(--terra);
+    }
+
     @media (max-width: 900px) {
       .manifesto-split { flex-direction: column-reverse; }
       .manifesto-content-rail { width: 100%; padding: 2rem 1.5rem; }
@@ -344,7 +448,12 @@
     h2 { font-family: 'Abril Fatface', serif; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 1.5rem; line-height: 1.1; }
 
     /* Builders Section */
-    .builders-section { border-bottom: 1.5px solid var(--ink); }
+    .builders-section {
+      border-bottom: 1.5px solid var(--ink);
+      background: var(--paper);
+      position: relative;
+      z-index: 15;
+    }
     .builders-header { margin-bottom: 2rem; }
     .builders-info {
       background: var(--paper);
@@ -461,347 +570,6 @@
     .how-number { font-family: 'Abril Fatface', serif; font-size: 4rem; color: var(--paper-dark); line-height: 1; margin-bottom: 1rem; }
     .how-card h3 { font-size: 1.2rem; margin-bottom: 1rem; }
     .how-card p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
-
-    /* ========== AI BUILDERS ARCHIVE ========== */
-    .archive-section {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      width: 100%;
-      min-height: 80vh;
-      border-top: 1.5px solid var(--ink);
-      border-bottom: 1.5px solid var(--ink);
-    }
-
-    .archive-featured {
-      position: relative;
-      overflow: hidden;
-      border-right: 1px solid rgba(0,0,0,0.1);
-      background-color: #e5e2d6;
-    }
-
-    .archive-slideshow {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-    }
-
-    .archive-slide {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      filter: grayscale(10%) sepia(5%);
-      opacity: 0;
-      animation: cycleArchive 18s infinite;
-    }
-
-    .archive-slide:nth-child(1) { animation-delay: 0s; }
-    .archive-slide:nth-child(2) { animation-delay: 6s; }
-    .archive-slide:nth-child(3) { animation-delay: 12s; }
-
-    @keyframes cycleArchive {
-      0% { opacity: 0; transform: scale(1.05); }
-      5% { opacity: 1; transform: scale(1); }
-      33% { opacity: 1; transform: scale(1); }
-      38% { opacity: 0; transform: scale(1.05); }
-      100% { opacity: 0; transform: scale(1.05); }
-    }
-
-    .archive-overlay {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 20;
-      background-color: var(--paper);
-      padding: 20px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-    }
-
-    .archive-monogram {
-      position: relative;
-      width: 140px; height: 140px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .archive-symbol {
-      font-family: 'Times New Roman', serif;
-      font-size: 50px;
-      font-weight: 300;
-      font-style: italic;
-      line-height: 1;
-      text-align: center;
-    }
-
-    .crop-mark {
-      position: absolute;
-      width: 15px; height: 15px;
-      border-color: var(--ink);
-      border-style: solid;
-    }
-    .crop-tl { top: 0; left: 0; border-width: 1px 0 0 1px; }
-    .crop-tr { top: 0; right: 0; border-width: 1px 1px 0 0; }
-    .crop-bl { bottom: 0; left: 0; border-width: 0 0 1px 1px; }
-    .crop-br { bottom: 0; right: 0; border-width: 0 1px 1px 0; }
-
-    .archive-list {
-      display: flex;
-      flex-direction: column;
-      height: 80vh;
-      background-color: var(--paper);
-      overflow: hidden;
-    }
-
-    .archive-header {
-      padding: 2rem;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-      flex-shrink: 0;
-    }
-
-    .archive-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .archive-nav-links {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .archive-nav-link {
-      text-decoration: none;
-      color: var(--ink);
-      margin-right: 20px;
-    }
-    .archive-nav-link.active { text-decoration: line-through; }
-
-    .archive-ref {
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      color: var(--muted);
-    }
-
-    .archive-bio h2 {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 12px;
-      color: var(--muted);
-    }
-
-    .archive-bio p {
-      font-family: 'Times New Roman', serif;
-      font-size: 18px;
-      line-height: 1.4;
-      max-width: 90%;
-      margin-bottom: 12px;
-    }
-
-    .archive-signature {
-      font-family: 'Times New Roman', serif;
-      font-style: italic;
-      font-size: 16px;
-      color: var(--rust);
-    }
-
-    .archive-scroll {
-      flex-grow: 1;
-      overflow-y: auto;
-      padding: 0 2rem 2rem;
-    }
-
-    .archive-scroll::-webkit-scrollbar { width: 6px; }
-    .archive-scroll::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.1); }
-
-    .archive-list-header {
-      display: grid;
-      grid-template-columns: 50px 60px 1fr 90px;
-      gap: 15px;
-      padding: 12px 0;
-      border-bottom: 2px solid var(--ink);
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      position: sticky;
-      top: 0;
-      background-color: var(--paper);
-      z-index: 5;
-    }
-
-    .archive-item {
-      display: grid;
-      grid-template-columns: 50px 60px 1fr 90px;
-      gap: 15px;
-      padding: 16px 0;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-      align-items: center;
-      transition: background-color 0.2s;
-      cursor: pointer;
-    }
-
-    .archive-item:hover { background-color: rgba(0,0,0,0.02); }
-    .archive-item:last-child { border-bottom: none; }
-
-    .archive-index {
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .archive-thumb {
-      width: 50px; height: 50px;
-      background-color: #e5e2d6;
-      overflow: hidden;
-      border-radius: 50%;
-    }
-
-    .archive-thumb img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      filter: grayscale(100%);
-      transition: filter 0.3s;
-    }
-
-    .archive-item:hover .archive-thumb img { filter: grayscale(0%); }
-
-    .archive-info { display: flex; flex-direction: column; gap: 3px; }
-
-    .archive-title {
-      font-family: 'Times New Roman', serif;
-      font-size: 16px;
-      font-style: italic;
-      color: var(--ink);
-    }
-
-    .archive-meta {
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--muted);
-    }
-
-    .archive-revenue {
-      font-family: 'Space Mono', monospace;
-      font-size: 13px;
-      text-align: right;
-      font-weight: bold;
-      color: var(--terra);
-    }
-
-    /* Archive Detail Panel */
-    .archive-detail {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.8);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem;
-    }
-
-    .archive-detail.active { display: flex; }
-
-    .archive-detail-card {
-      background: var(--paper);
-      max-width: 550px;
-      width: 100%;
-      padding: 2.5rem;
-      position: relative;
-    }
-
-    .archive-detail-close {
-      position: absolute;
-      top: 1rem; right: 1rem;
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--muted);
-    }
-
-    .archive-detail-header {
-      display: flex;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-      align-items: flex-start;
-    }
-
-    .archive-detail-photo {
-      width: 100px; height: 100px;
-      border-radius: 50%;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .archive-detail-photo img { width: 100%; height: 100%; object-fit: cover; }
-
-    .archive-detail-info h3 {
-      font-family: 'Anton', sans-serif;
-      font-size: 1.8rem;
-      text-transform: uppercase;
-      margin-bottom: 0.4rem;
-    }
-
-    .archive-detail-info .handle {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.85rem;
-      color: var(--rust);
-      margin-bottom: 0.3rem;
-    }
-
-    .archive-detail-info .product {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .archive-detail-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-      padding: 1.25rem;
-      background: var(--paper-dark);
-    }
-
-    .archive-stat-item { text-align: center; }
-    .archive-stat-value { font-family: 'Anton', sans-serif; font-size: 1.5rem; color: var(--terra); }
-    .archive-stat-label { font-family: 'Space Mono', monospace; font-size: 0.6rem; text-transform: uppercase; color: var(--muted); }
-
-    .archive-detail-note {
-      font-family: 'Times New Roman', serif;
-      font-size: 1rem;
-      line-height: 1.5;
-      font-style: italic;
-      border-left: 3px solid var(--rust);
-      padding-left: 1rem;
-    }
-
-    .archive-detail-link {
-      display: inline-block;
-      margin-top: 1.25rem;
-      padding: 0.6rem 1.25rem;
-      background: var(--ink);
-      color: var(--paper);
-      text-decoration: none;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-    }
-
-    @media (max-width: 900px) {
-      .archive-section { grid-template-columns: 1fr; height: auto; min-height: auto; }
-      .archive-featured { height: 35vh; }
-      .archive-list { height: auto; max-height: 60vh; }
-    }
 
     /* Sponsors section */
     .sponsors-section {
@@ -1074,6 +842,7 @@
       mix-blend-mode: overlay;
     }
 
+    /* ========== GLOBAL MOBILE OVERRIDES ========== */
     @media (max-width: 768px) {
       .prize-pool-widget {
         position: relative;
@@ -1084,15 +853,8 @@
         margin: 0;
         padding: 2rem;
       }
-      nav { padding: 1rem; flex-direction: column; gap: 0.75rem; background: rgba(230,226,214,0.98); }
-      .nav-links { gap: 1rem; font-size: 0.65rem; }
-      .hero { padding: 6rem 1.5rem 3rem; min-height: auto; }
-      .hero-title { font-size: clamp(3rem, 15vw, 5rem); margin-bottom: 0.5rem; }
-      .data-block { position: relative; top: auto !important; left: auto !important; right: auto !important; transform: none !important; max-width: 100%; text-align: center; margin-bottom: 1.5rem; background: var(--paper); padding: 1rem; border-top: 2px solid var(--rust); }
-      .data-tl { order: -1; }
-      .date-badge { position: relative; top: auto !important; right: auto !important; text-align: center; margin-top: 2rem; }
-      .date-badge .year { font-size: 2.5rem; display: inline; }
-      .pill { padding: 6px 14px; font-size: 0.75rem; }
+      nav { padding: 1rem; background: rgba(230,226,214,0.92); }
+      .nav-links { gap: 1.5rem; font-size: 0.65rem; }
       section { padding: 3rem 1.5rem; }
       h2 { font-size: clamp(1.5rem, 6vw, 2rem); }
       .builders-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
@@ -1128,7 +890,6 @@
       <div class="nav-links">
         <a href="#manifesto">manifesto</a>
         <a href="#builders">builders</a>
-        <a href="#protocol">protocol</a>
         <a href="#sponsors">sponsors</a>
       </div>
     </nav>
@@ -1192,18 +953,41 @@
           <p>We want to prove it in the shortest time possible.</p>
         </div>
 
-        <div class="manifesto-item" data-word="EXEC">
+        <div class="manifesto-item" data-word="BUILD">
           <h3>The Mission</h3>
           <h2>10 Builders.<br>One Goal.</h2>
           <p>Idea Guys is where speculation meets creation. 10 builders enter. A single mission: <span class="highlight">generate $100,000 in real revenue</span> using AI or be eliminated.</p>
+          <p>Build anything: an AI OnlyFans, a consumer app, Polymarket arbitrage bots, trading bots, a content agency — whatever tf. You've got Claude Code, Cursor, and every AI tool to make it happen.</p>
           <p>First to hit the target wins $100k on top. No teams. No funding rounds. Just raw execution streamed live to the world.</p>
         </div>
 
-        <div class="manifesto-item" data-word="WATCH">
-          <h3>The Experiment</h3>
-          <h2>The Invisible Hand</h2>
-          <p>The audience transforms from passive viewers into active participants. Watch the journey unfold in real-time. Vote on decisions. Shape who survives.</p>
-          <p>The show continues until someone wins. No scripts. No safety nets. Pure entrepreneurial chaos.</p>
+        <div class="manifesto-item" data-word="PROOF">
+          <h3>The Proof</h3>
+          <h2>Real Builders.<br>Real Revenue.</h2>
+          <p>These founders proved the thesis. Solo builders making millions with AI. No teams. No VC. Just execution.</p>
+          <div class="proof-builders">
+            <div class="proof-builder">
+              <div class="proof-avatar"><img src="https://api.dicebear.com/7.x/notionists/svg?seed=zach&backgroundColor=c4b8a5" alt="Zach"></div>
+              <div class="proof-info"><span class="proof-name">Zach Yadegari</span><span class="proof-product">Cal AI</span></div>
+              <span class="proof-revenue">$1M/mo</span>
+            </div>
+            <div class="proof-builder">
+              <div class="proof-avatar"><img src="https://api.dicebear.com/7.x/notionists/svg?seed=pieter&backgroundColor=c4b8a5" alt="Pieter"></div>
+              <div class="proof-info"><span class="proof-name">Pieter Levels</span><span class="proof-product">PhotoAI</span></div>
+              <span class="proof-revenue">$420K/mo</span>
+            </div>
+            <div class="proof-builder">
+              <div class="proof-avatar"><img src="https://api.dicebear.com/7.x/notionists/svg?seed=tony&backgroundColor=c4b8a5" alt="Tony"></div>
+              <div class="proof-info"><span class="proof-name">Tony Dinh</span><span class="proof-product">TypingMind</span></div>
+              <span class="proof-revenue">$137K/mo</span>
+            </div>
+            <div class="proof-builder">
+              <div class="proof-avatar"><img src="https://api.dicebear.com/7.x/notionists/svg?seed=david&backgroundColor=c4b8a5" alt="David"></div>
+              <div class="proof-info"><span class="proof-name">David Bressler</span><span class="proof-product">Formula Bot</span></div>
+              <span class="proof-revenue">$220K/mo</span>
+            </div>
+          </div>
+          <p style="margin-top: 1.5rem; font-style: italic; color: var(--rust);">the precedent exists</p>
         </div>
 
         <div class="manifesto-item" data-word="LIVE">
@@ -1246,252 +1030,12 @@
       <div class="recommend-builder">
         <h3>recommend a builder</h3>
         <p>know someone who should compete? drop their twitter handle below.</p>
-        <form class="recommend-form" onsubmit="event.preventDefault(); alert('recommendation submitted! we\'ll check them out.');">
+        <form class="recommend-form" onsubmit="event.preventDefault(); alert('recommendation submitted! we\'ll check them out.'); window.location.href='#sponsors';">
           <input type="text" name="twitter" placeholder="@username" required>
           <button type="submit">submit</button>
         </form>
       </div>
     </section>
-
-    <!-- How it works / Protocol -->
-    <section id="protocol" class="how-section solid-bg">
-      <div style="max-width: 1200px; margin: 0 auto;">
-        <div class="section-label">// the protocol</div>
-        <h2>how it works</h2>
-
-        <div class="how-grid">
-          <div class="how-card">
-            <div class="how-number">01</div>
-            <h3>10 builders enter</h3>
-            <p>solo founders, hackers, and degens compete head-to-head. each has $1,000 for tools. build anything — ai agents, saas, arbitrage bots, tokenized products. real revenue only.</p>
-          </div>
-          <div class="how-card">
-            <div class="how-number">02</div>
-            <h3>audience decides fate</h3>
-            <p>the audience holds power. vote on challenges, watch the streams, and participate in deciding who stays and who goes. the community becomes the producer.</p>
-          </div>
-          <div class="how-card">
-            <div class="how-number">03</div>
-            <h3>$100k = $200k</h3>
-            <p>first builder to hit $100k in real revenue wins. they take home $100k bonus on top of what they made. no fake metrics. stripe receipts or gtfo.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- AI BUILDERS ARCHIVE - Success Stories -->
-    <div id="proof" class="archive-section">
-      <section class="archive-featured">
-        <div class="archive-slideshow">
-          <img src="https://images.unsplash.com/photo-1629196914375-f7e48f477b6d?q=80&w=2834&auto=format&fit=crop" class="archive-slide" alt="Featured 1">
-          <img src="https://images.unsplash.com/photo-1531169509526-f8f1fdaa4a67?q=80&w=1287&auto=format&fit=crop" class="archive-slide" alt="Featured 2">
-          <img src="https://images.unsplash.com/photo-1706192048400-884d17841d62?q=80&w=1470&auto=format&fit=crop" class="archive-slide" alt="Featured 3">
-        </div>
-
-        <div class="archive-overlay">
-          <div class="archive-monogram">
-            <div class="crop-mark crop-tl"></div>
-            <div class="crop-mark crop-tr"></div>
-            <div class="crop-mark crop-bl"></div>
-            <div class="crop-mark crop-br"></div>
-            <div class="archive-symbol">proof it<br>works</div>
-          </div>
-        </div>
-      </section>
-
-      <section class="archive-list">
-        <header class="archive-header">
-          <div class="archive-nav">
-            <nav class="archive-nav-links">
-              <a href="#" class="archive-nav-link active">success stories</a>
-              <a href="#builders" class="archive-nav-link">apply</a>
-            </nav>
-            <div class="archive-ref">REF: IG-S01-26</div>
-          </div>
-
-          <div class="archive-bio">
-            <h2>// Real Builders. Real Revenue.</h2>
-            <p>These founders proved the thesis. Solo builders making millions with AI. No teams. No VC. Just execution.</p>
-            <div class="archive-signature">the precedent exists</div>
-          </div>
-        </header>
-
-        <div class="archive-scroll">
-          <div class="archive-list-header">
-            <span>No.</span>
-            <span></span>
-            <span>Details</span>
-            <span style="text-align: right;">Revenue</span>
-          </div>
-
-          <article class="archive-item" onclick="openDetail('zach')">
-            <div class="archive-index">[001]</div>
-            <div class="archive-thumb"><img src="https://pbs.twimg.com/profile_images/1786477752583208960/EuUjvqPg_400x400.jpg" alt="Zach Yadegari"></div>
-            <div class="archive-info">
-              <span class="archive-title">Zach Yadegari</span>
-              <span class="archive-meta">Cal AI • Calorie Tracker</span>
-              <span class="archive-meta" style="color: #999;">17 years old</span>
-            </div>
-            <div class="archive-revenue">$1M/mo</div>
-          </article>
-
-          <article class="archive-item" onclick="openDetail('pieter')">
-            <div class="archive-index">[002]</div>
-            <div class="archive-thumb"><img src="https://pbs.twimg.com/profile_images/1589756412078555136/YlXMBzhp_400x400.jpg" alt="Pieter Levels"></div>
-            <div class="archive-info">
-              <span class="archive-title">Pieter Levels</span>
-              <span class="archive-meta">PhotoAI • AI Headshots</span>
-              <span class="archive-meta" style="color: #999;">Solo, 0 employees</span>
-            </div>
-            <div class="archive-revenue">$420K/mo</div>
-          </article>
-
-          <article class="archive-item" onclick="openDetail('tony')">
-            <div class="archive-index">[003]</div>
-            <div class="archive-thumb"><img src="https://pbs.twimg.com/profile_images/1587906412319612928/5C5zM4vP_400x400.jpg" alt="Tony Dinh"></div>
-            <div class="archive-info">
-              <span class="archive-title">Tony Dinh</span>
-              <span class="archive-meta">TypingMind • ChatGPT UI</span>
-              <span class="archive-meta" style="color: #999;">Built in 5 days</span>
-            </div>
-            <div class="archive-revenue">$137K/mo</div>
-          </article>
-
-          <article class="archive-item" onclick="openDetail('formula')">
-            <div class="archive-index">[004]</div>
-            <div class="archive-thumb"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=300&fit=crop" alt="Formula Bot"></div>
-            <div class="archive-info">
-              <span class="archive-title">David Bressler</span>
-              <span class="archive-meta">Formula Bot • AI Spreadsheets</span>
-              <span class="archive-meta" style="color: #999;">No code</span>
-            </div>
-            <div class="archive-revenue">$220K/mo</div>
-          </article>
-
-          <article class="archive-item" onclick="openDetail('tweethunter')">
-            <div class="archive-index">[005]</div>
-            <div class="archive-thumb"><img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=300&h=300&fit=crop" alt="Tweet Hunter"></div>
-            <div class="archive-info">
-              <span class="archive-title">Tibo Louis-Lucas</span>
-              <span class="archive-meta">Tweet Hunter • AI Twitter</span>
-              <span class="archive-meta" style="color: #999;">Sold for 8 figs</span>
-            </div>
-            <div class="archive-revenue">$1.4M/yr</div>
-          </article>
-        </div>
-      </section>
-    </div>
-
-    <!-- Detail Panels -->
-    <div id="detail-zach" class="archive-detail">
-      <div class="archive-detail-card">
-        <button class="archive-detail-close" onclick="closeDetail('zach')">&times;</button>
-        <div class="archive-detail-header">
-          <div class="archive-detail-photo"><img src="https://pbs.twimg.com/profile_images/1786477752583208960/EuUjvqPg_400x400.jpg" alt="Zach Yadegari"></div>
-          <div class="archive-detail-info">
-            <h3>Zach Yadegari</h3>
-            <div class="handle">@zaborya</div>
-            <div class="product">Cal AI — Calorie Tracking App</div>
-          </div>
-        </div>
-        <div class="archive-detail-stats">
-          <div class="archive-stat-item"><div class="archive-stat-value">$1M</div><div class="archive-stat-label">MRR</div></div>
-          <div class="archive-stat-item"><div class="archive-stat-value">6mo</div><div class="archive-stat-label">To $1M MRR</div></div>
-          <div class="archive-stat-item"><div class="archive-stat-value">17</div><div class="archive-stat-label">Age at Launch</div></div>
-          <div class="archive-stat-item"><div class="archive-stat-value">5M+</div><div class="archive-stat-label">Downloads</div></div>
-        </div>
-        <div class="archive-detail-note">"At 17, Zach launched Cal AI from his parents' home. Users snap a photo of their food and AI estimates calories with 90% accuracy. He met his co-founder on Twitter."</div>
-        <a href="https://x.com/zaborya" target="_blank" class="archive-detail-link">follow on x</a>
-      </div>
-    </div>
-
-    <div id="detail-pieter" class="archive-detail">
-      <div class="archive-detail-card">
-        <button class="archive-detail-close" onclick="closeDetail('pieter')">&times;</button>
-        <div class="archive-detail-header">
-          <div class="archive-detail-photo"><img src="https://pbs.twimg.com/profile_images/1589756412078555136/YlXMBzhp_400x400.jpg" alt="Pieter Levels"></div>
-          <div class="archive-detail-info">
-            <h3>Pieter Levels</h3>
-            <div class="handle">@levelsio</div>
-            <div class="product">PhotoAI, Nomad List, Remote OK</div>
-          </div>
-        </div>
-        <div class="archive-detail-stats">
-          <div class="archive-stat-item"><div class="archive-stat-value">$420K</div><div class="archive-stat-label">Monthly</div></div>
-          <div class="archive-stat-item"><div class="archive-stat-value">0</div><div class="archive-stat-label">Employees</div></div>
-          <div class="archive-stat-item"><div class="archive-stat-value">70+</div><div class="archive-stat-label">Failed Projects</div></div>
-          <div class="archive-stat-item"><div class="archive-stat-value">$3M</div><div class="archive-stat-label">Annual</div></div>
-        </div>
-        <div class="archive-detail-note">"After 70 failed startups, Pieter built PhotoAI — an AI that generates professional headshots. $100K in the first 10 days. Zero employees. He codes everything himself."</div>
-        <a href="https://x.com/levelsio" target="_blank" class="archive-detail-link">follow on x</a>
-      </div>
-    </div>
-
-    <div id="detail-tony" class="archive-detail">
-      <div class="archive-detail-card">
-        <button class="archive-detail-close" onclick="closeDetail('tony')">&times;</button>
-        <div class="archive-detail-header">
-          <div class="archive-detail-photo"><img src="https://pbs.twimg.com/profile_images/1587906412319612928/5C5zM4vP_400x400.jpg" alt="Tony Dinh"></div>
-          <div class="archive-detail-info">
-            <h3>Tony Dinh</h3>
-            <div class="handle">@tdinh_me</div>
-            <div class="product">TypingMind — Better ChatGPT UI</div>
-          </div>
-        </div>
-        <div class="archive-detail-stats">
-          <div class="archive-stat-item"><div class="archive-stat-value">$137K</div><div class="archive-stat-label">MRR</div></div>
-          <div class="archive-stat-item"><div class="archive-stat-value">5</div><div class="archive-stat-label">Days to Build</div></div>
-          <div class="archive-stat-item"><div class="archive-stat-value">$22K</div><div class="archive-stat-label">First Week</div></div>
-          <div class="archive-stat-item"><div class="archive-stat-value">130K</div><div class="archive-stat-label">X Followers</div></div>
-        </div>
-        <div class="archive-detail-note">"Tony quit his corporate job after 7 years. Built TypingMind in a weekend because ChatGPT was too slow. Launched on Product Hunt, hit #1. He builds in public on Twitter."</div>
-        <a href="https://x.com/tdinh_me" target="_blank" class="archive-detail-link">follow on x</a>
-      </div>
-    </div>
-
-    <div id="detail-formula" class="archive-detail">
-      <div class="archive-detail-card">
-        <button class="archive-detail-close" onclick="closeDetail('formula')">&times;</button>
-        <div class="archive-detail-header">
-          <div class="archive-detail-photo"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=300&fit=crop" alt="Formula Bot"></div>
-          <div class="archive-detail-info">
-            <h3>David Bressler</h3>
-            <div class="handle">@formulabot</div>
-            <div class="product">Formula Bot — AI for Spreadsheets</div>
-          </div>
-        </div>
-        <div class="archive-detail-stats">
-          <div class="archive-stat-item"><div class="archive-stat-value">$220K</div><div class="archive-stat-label">MRR</div></div>
-          <div class="archive-stat-item"><div class="archive-stat-value">No Code</div><div class="archive-stat-label">Tech</div></div>
-          <div class="archive-stat-item"><div class="archive-stat-value">OpenAI</div><div class="archive-stat-label">API</div></div>
-          <div class="archive-stat-item"><div class="archive-stat-value">Excel</div><div class="archive-stat-label">Platform</div></div>
-        </div>
-        <div class="archive-detail-note">"Formula Bot combines OpenAI's API with Excel — no code required. Type what you want in plain English, get the formula. Simple wrapper, massive market."</div>
-        <a href="https://formulabot.com" target="_blank" class="archive-detail-link">visit site</a>
-      </div>
-    </div>
-
-    <div id="detail-tweethunter" class="archive-detail">
-      <div class="archive-detail-card">
-        <button class="archive-detail-close" onclick="closeDetail('tweethunter')">&times;</button>
-        <div class="archive-detail-header">
-          <div class="archive-detail-photo"><img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=300&h=300&fit=crop" alt="Tweet Hunter"></div>
-          <div class="archive-detail-info">
-            <h3>Tibo Louis-Lucas</h3>
-            <div class="handle">@taborlp</div>
-            <div class="product">Tweet Hunter — AI Twitter Growth</div>
-          </div>
-        </div>
-        <div class="archive-detail-stats">
-          <div class="archive-stat-item"><div class="archive-stat-value">$1.4M</div><div class="archive-stat-label">Annual</div></div>
-          <div class="archive-stat-item"><div class="archive-stat-value">8 Figs</div><div class="archive-stat-label">Exit</div></div>
-          <div class="archive-stat-item"><div class="archive-stat-value">3yrs</div><div class="archive-stat-label">To Exit</div></div>
-          <div class="archive-stat-item"><div class="archive-stat-value">AI</div><div class="archive-stat-label">Tweets</div></div>
-        </div>
-        <div class="archive-detail-note">"Tweet Hunter used AI to help people write better tweets. Launched in 2020, hit $1.4M annual. Sold for 8 figures in 2023. The playbook: solve a problem for the platform you're on."</div>
-        <a href="https://x.com/taborlp" target="_blank" class="archive-detail-link">follow on x</a>
-      </div>
-    </div>
 
     <!-- Sponsors -->
     <section id="sponsors" class="sponsors-section">
@@ -1594,35 +1138,6 @@
   </div>
 
   <script>
-    // Detail panel functions
-    function openDetail(id) {
-      document.getElementById('detail-' + id).classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeDetail(id) {
-      document.getElementById('detail-' + id).classList.remove('active');
-      document.body.style.overflow = '';
-    }
-
-    document.querySelectorAll('.archive-detail').forEach(panel => {
-      panel.addEventListener('click', (e) => {
-        if (e.target === panel) {
-          panel.classList.remove('active');
-          document.body.style.overflow = '';
-        }
-      });
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        document.querySelectorAll('.archive-detail.active').forEach(panel => {
-          panel.classList.remove('active');
-        });
-        document.body.style.overflow = '';
-      }
-    });
-
     // Three.js Globe
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();

@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>idea guys</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%230d0d0d'/%3E%3Ccircle cx='50' cy='50' r='40' fill='%23C85228'/%3E%3Ccircle cx='50' cy='50' r='28' fill='%238B3618'/%3E%3Ccircle cx='50' cy='50' r='12' fill='%23000'/%3E%3Cellipse cx='42' cy='42' rx='6' ry='4' fill='%23fff' opacity='0.7' transform='rotate(-30 42 42)'/%3E%3C/svg%3E">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Syne:wght@400;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Anton&family=Syne:wght@400;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;400;600&family=Inter:wght@400;500;600&family=Archivo:wdth,wght@62..125,100..900&family=Times+New+Roman&display=swap" rel="stylesheet">
   <style>
     :root {
       --paper: #E6E2D6;
@@ -15,6 +16,7 @@
       --terra: #2A5A42;
       --gold: #D4A044;
       --muted: #7a7468;
+      --beige: #c4b8a5;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
@@ -35,13 +37,12 @@
       pointer-events: none;
     }
 
-    .ui-layer { position: relative; z-index: 10; }
-
-    /* Solid background sections (block globe) */
-    .solid-bg {
-      background: var(--paper);
-      position: relative;
+    @media (max-width: 768px) {
+      #canvas-container { opacity: 0.5; top: -10%; }
     }
+
+    .ui-layer { position: relative; z-index: 10; }
+    .solid-bg { background: var(--paper); position: relative; }
 
     nav {
       position: fixed;
@@ -59,7 +60,6 @@
     }
 
     .brand { display: flex; align-items: center; gap: 8px; }
-
     .status-dot {
       width: 8px; height: 8px;
       background: var(--rust);
@@ -89,12 +89,7 @@
     }
 
     @media (max-width: 768px) {
-      .hero {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        padding-top: 8rem;
-      }
+      .hero { justify-content: flex-start; padding-top: 8rem; }
     }
 
     .hero-title {
@@ -103,46 +98,50 @@
       line-height: 0.9;
       letter-spacing: -0.04em;
       margin-bottom: 1rem;
+      color: var(--beige);
+      text-shadow: 2px 2px 0 var(--paper), 4px 4px 0 rgba(0,0,0,0.1);
     }
 
     .pill-cluster { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 1rem; }
 
     .pill {
-      border: 1.5px solid var(--ink);
-      padding: 6px 20px;
+      border: 2px solid var(--ink);
+      padding: 8px 24px;
       border-radius: 50px;
       font-family: 'Syne', sans-serif;
       font-weight: 700;
       text-transform: uppercase;
       font-size: 0.85rem;
-      background: transparent;
+      background: var(--paper);
       color: var(--ink);
       text-decoration: none;
       transition: all 0.3s;
+      box-shadow: 3px 3px 0 var(--ink);
     }
-    .pill:hover { background: var(--ink); color: var(--paper); }
-    .pill.accent { border-color: var(--rust); color: var(--rust); }
-    .pill.accent:hover { background: var(--rust); color: var(--paper); }
+    .pill:hover { background: var(--ink); color: var(--paper); box-shadow: 1px 1px 0 var(--ink); transform: translate(2px, 2px); }
 
     .data-block {
       position: absolute;
       font-family: 'Space Mono', monospace;
-      font-size: 1rem;
-      line-height: 2;
+      font-size: 0.85rem;
+      line-height: 2.2;
       color: var(--ink);
-      max-width: 220px;
+      max-width: 260px;
     }
-    .data-block .label { color: var(--muted); font-size: 0.75rem; }
-    .data-block .value { color: var(--rust); font-weight: bold; font-size: 1.1rem; }
+    .data-block .data-row { margin-bottom: 1rem; }
+    .data-block .label { color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+    .data-block .value { color: var(--ink); font-weight: bold; font-size: 0.9rem; display: block; margin-top: 0.15rem; }
     .data-block .status {
-      margin-top: 1rem;
+      margin-top: 1.5rem;
       padding: 6px 14px;
       border: 1.5px solid var(--gold);
       color: var(--gold);
       display: inline-block;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
-    .data-tl { top: 16%; left: 5%; text-align: left; }
+    .data-tl { top: 50%; left: 1.5rem; transform: translateY(-50%); text-align: left; }
 
     .date-badge { position: absolute; top: 16%; right: 5%; text-align: right; }
     .date-badge .year { font-family: 'Abril Fatface', serif; font-size: 3.5rem; color: var(--ink); line-height: 1; }
@@ -185,42 +184,210 @@
     .rec-indicator { position: absolute; top: 12px; right: 40px; display: flex; align-items: center; gap: 6px; font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--paper); }
     .rec-dot { width: 6px; height: 6px; background: var(--paper); border-radius: 50%; animation: pulse 1s infinite; }
 
+    /* ========== MANIFESTO - SPLIT SCREEN WITH 4 SECTIONS ========== */
+    .manifesto-split {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+      position: relative;
+      border-top: 1.5px solid var(--ink);
+      border-bottom: 1.5px solid var(--ink);
+    }
+
+    .manifesto-content-rail {
+      width: 50%;
+      padding: 4rem 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      background: var(--paper-dark);
+      z-index: 10;
+      overflow-y: auto;
+    }
+
+    .manifesto-type-rail {
+      width: 50%;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      right: 0;
+      background: var(--ink);
+      color: var(--paper);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mega-type {
+      font-family: 'Anton', sans-serif;
+      font-size: 35vh;
+      line-height: 0.8;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transform: scaleY(1.4) rotate(90deg);
+      transform-origin: center;
+      position: absolute;
+      letter-spacing: -0.02em;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
+      color: var(--paper);
+    }
+
+    .manifesto-item {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      opacity: 0.4;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      transform: translateY(20px);
+      border-left: 1px solid rgba(0,0,0,0.1);
+      padding-left: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .manifesto-item.active {
+      opacity: 1;
+      transform: translateY(0);
+      border-left: 4px solid var(--rust);
+    }
+
+    .manifesto-item h3 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+      color: var(--rust);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .manifesto-item h3::before {
+      content: '';
+      display: block;
+      width: 8px;
+      height: 8px;
+      background: var(--rust);
+    }
+
+    .manifesto-item h2 {
+      font-family: 'Anton', sans-serif;
+      text-transform: uppercase;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 0.95;
+      margin-bottom: 1.5rem;
+      transform: scaleY(1.05);
+      letter-spacing: -0.01em;
+    }
+
+    .manifesto-item p {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      max-width: 90%;
+      opacity: 0.9;
+    }
+
+    .manifesto-item .highlight {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0 4px;
+      font-weight: 600;
+    }
+
+    .manifesto-item .highlight-rust {
+      background: var(--rust);
+      color: var(--paper);
+      padding: 0 4px;
+      font-weight: 600;
+    }
+
+    .btn-arena {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2.5rem;
+      background: var(--rust);
+      color: var(--paper);
+      text-transform: uppercase;
+      font-family: 'Anton', sans-serif;
+      font-size: 1.3rem;
+      border: none;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+      position: relative;
+      overflow: hidden;
+      transform: scaleY(1.05);
+      text-decoration: none;
+    }
+
+    .btn-arena:hover { background: var(--ink); padding-right: 3.5rem; }
+    .btn-arena::after { content: '\2192'; position: absolute; right: 1.2rem; opacity: 0; transform: translateX(-10px); transition: all 0.3s ease; }
+    .btn-arena:hover::after { opacity: 1; transform: translateX(0); }
+
+    @media (max-width: 900px) {
+      .manifesto-split { flex-direction: column-reverse; }
+      .manifesto-content-rail { width: 100%; padding: 2rem 1.5rem; }
+      .manifesto-type-rail { position: relative; width: 100%; height: 30vh; }
+      .mega-type { font-size: 20vh; transform: rotate(0) scaleY(1.3); }
+    }
+
     /* Section base */
     section { padding: 6rem 2rem; max-width: 1200px; margin: 0 auto; }
-
     .section-label { font-family: 'Space Mono', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--terra); margin-bottom: 1rem; }
-
     h2 { font-family: 'Abril Fatface', serif; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 1.5rem; line-height: 1.1; }
-
-    /* Manifesto */
-    .manifesto { border-top: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); background: var(--paper-dark); }
-    .manifesto-content { max-width: 800px; }
-    .manifesto-text { font-family: 'Inter', sans-serif; font-size: 1.1rem; line-height: 1.8; color: var(--muted); }
-    .manifesto-text strong { color: var(--ink); }
 
     /* Builders Section */
     .builders-section { border-bottom: 1.5px solid var(--ink); }
+    .builders-header { margin-bottom: 2rem; }
+    .builders-info {
+      background: var(--paper);
+      padding: 1.5rem;
+      max-width: 500px;
+      border-left: 3px solid var(--rust);
+    }
+    .builders-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-top: 1rem;
+    }
 
     .builders-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem; margin-top: 3rem; }
     @media (max-width: 900px) { .builders-grid { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 600px) { .builders-grid { grid-template-columns: repeat(2, 1fr); } }
 
-    .builder-card { text-align: center; }
+    /* Builder Card - Glass effect with question mark */
+    .builder-card {
+      text-align: center;
+      position: relative;
+      cursor: pointer;
+    }
     .builder-photo {
       aspect-ratio: 1;
-      background: linear-gradient(135deg, var(--paper-dark), #c4bfb3);
-      border: 1.5px solid var(--ink);
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(255,255,255,0.2);
       margin-bottom: 1rem;
       position: relative;
       overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     }
     .builder-photo::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='35' r='18' fill='%23a09888'/%3E%3Cellipse cx='50' cy='80' rx='25' ry='20' fill='%23a09888'/%3E%3C/svg%3E") center/60% no-repeat;
-      filter: blur(8px);
-      opacity: 0.6;
+      background: linear-gradient(135deg, var(--paper-dark) 0%, #b8b3a7 50%, var(--paper-dark) 100%);
+      z-index: 0;
     }
     .builder-photo::after {
       content: '?';
@@ -228,13 +395,64 @@
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       font-family: 'Abril Fatface', serif;
-      font-size: 2.5rem;
-      color: #a09888;
+      font-size: 3rem;
+      color: rgba(255,255,255,0.9);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      z-index: 2;
     }
-    .builder-name { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .builder-glass-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.3) 100%);
+      z-index: 1;
+    }
+    .builder-card:hover .builder-photo {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      border-color: rgba(255,255,255,0.4);
+    }
+    .builder-card:hover .builder-photo::after {
+      color: var(--rust);
+      text-shadow: 0 4px 20px rgba(200,82,40,0.4);
+    }
+    .builder-name { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; transition: color 0.3s; }
     .builder-status { font-size: 0.7rem; color: var(--gold); margin-top: 0.25rem; }
+    .builder-card:hover .builder-name { color: var(--ink); }
 
-    /* How it works - with solid background */
+    /* Builder Recommendation Form */
+    .recommend-builder {
+      margin-top: 3rem;
+      padding: 2rem;
+      background: var(--paper-dark);
+      border: 1.5px solid var(--ink);
+    }
+    .recommend-builder h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; margin-bottom: 0.5rem; }
+    .recommend-builder p { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--muted); margin-bottom: 1.5rem; }
+    .recommend-form { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .recommend-form input {
+      flex: 1;
+      min-width: 200px;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--ink);
+      background: var(--paper);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+    }
+    .recommend-form input::placeholder { color: var(--muted); }
+    .recommend-form button {
+      padding: 0.75rem 2rem;
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .recommend-form button:hover { background: var(--rust); }
+
+    /* How it works / Protocol */
     .how-section { background: var(--paper); border-top: 1.5px solid var(--ink); }
     .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
     @media (max-width: 768px) { .how-grid { grid-template-columns: 1fr; } }
@@ -244,27 +462,348 @@
     .how-card h3 { font-size: 1.2rem; margin-bottom: 1rem; }
     .how-card p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
 
-    /* Token Section - with solid background */
-    .token-section { border-top: 1.5px solid var(--ink); background: var(--paper); }
+    /* ========== AI BUILDERS ARCHIVE ========== */
+    .archive-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 100%;
+      min-height: 80vh;
+      border-top: 1.5px solid var(--ink);
+      border-bottom: 1.5px solid var(--ink);
+    }
 
-    .token-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 3rem; }
-    @media (max-width: 768px) { .token-grid { grid-template-columns: 1fr; } }
+    .archive-featured {
+      position: relative;
+      overflow: hidden;
+      border-right: 1px solid rgba(0,0,0,0.1);
+      background-color: #e5e2d6;
+    }
 
-    .pie-container { display: flex; flex-direction: column; align-items: center; gap: 2rem; }
-    .pie-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 2rem; font-size: 0.85rem; }
-    .legend-item { display: flex; align-items: center; gap: 8px; }
-    .legend-dot { width: 12px; height: 12px; }
-    .legend-label { color: var(--muted); }
-    .legend-value { font-weight: bold; margin-left: auto; }
+    .archive-slideshow {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
 
-    .mechanic { padding-left: 1rem; border-left: 2px solid var(--terra); margin-bottom: 1.5rem; }
-    .mechanic.red { border-color: var(--rust); }
-    .mechanic.amber { border-color: var(--gold); }
-    .mechanic.muted { border-color: var(--muted); }
-    .mechanic h4 { font-size: 1rem; margin-bottom: 0.5rem; }
-    .mechanic p { color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
+    .archive-slide {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: grayscale(10%) sepia(5%);
+      opacity: 0;
+      animation: cycleArchive 18s infinite;
+    }
 
-    /* Sponsors section (merged with budget) */
+    .archive-slide:nth-child(1) { animation-delay: 0s; }
+    .archive-slide:nth-child(2) { animation-delay: 6s; }
+    .archive-slide:nth-child(3) { animation-delay: 12s; }
+
+    @keyframes cycleArchive {
+      0% { opacity: 0; transform: scale(1.05); }
+      5% { opacity: 1; transform: scale(1); }
+      33% { opacity: 1; transform: scale(1); }
+      38% { opacity: 0; transform: scale(1.05); }
+      100% { opacity: 0; transform: scale(1.05); }
+    }
+
+    .archive-overlay {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 20;
+      background-color: var(--paper);
+      padding: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    .archive-monogram {
+      position: relative;
+      width: 140px; height: 140px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .archive-symbol {
+      font-family: 'Times New Roman', serif;
+      font-size: 50px;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .crop-mark {
+      position: absolute;
+      width: 15px; height: 15px;
+      border-color: var(--ink);
+      border-style: solid;
+    }
+    .crop-tl { top: 0; left: 0; border-width: 1px 0 0 1px; }
+    .crop-tr { top: 0; right: 0; border-width: 1px 1px 0 0; }
+    .crop-bl { bottom: 0; left: 0; border-width: 0 0 1px 1px; }
+    .crop-br { bottom: 0; right: 0; border-width: 0 1px 1px 0; }
+
+    .archive-list {
+      display: flex;
+      flex-direction: column;
+      height: 80vh;
+      background-color: var(--paper);
+      overflow: hidden;
+    }
+
+    .archive-header {
+      padding: 2rem;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+
+    .archive-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .archive-nav-links {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .archive-nav-link {
+      text-decoration: none;
+      color: var(--ink);
+      margin-right: 20px;
+    }
+    .archive-nav-link.active { text-decoration: line-through; }
+
+    .archive-ref {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .archive-bio h2 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      color: var(--muted);
+    }
+
+    .archive-bio p {
+      font-family: 'Times New Roman', serif;
+      font-size: 18px;
+      line-height: 1.4;
+      max-width: 90%;
+      margin-bottom: 12px;
+    }
+
+    .archive-signature {
+      font-family: 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--rust);
+    }
+
+    .archive-scroll {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 0 2rem 2rem;
+    }
+
+    .archive-scroll::-webkit-scrollbar { width: 6px; }
+    .archive-scroll::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.1); }
+
+    .archive-list-header {
+      display: grid;
+      grid-template-columns: 50px 60px 1fr 90px;
+      gap: 15px;
+      padding: 12px 0;
+      border-bottom: 2px solid var(--ink);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+      background-color: var(--paper);
+      z-index: 5;
+    }
+
+    .archive-item {
+      display: grid;
+      grid-template-columns: 50px 60px 1fr 90px;
+      gap: 15px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      align-items: center;
+      transition: background-color 0.2s;
+      cursor: pointer;
+    }
+
+    .archive-item:hover { background-color: rgba(0,0,0,0.02); }
+    .archive-item:last-child { border-bottom: none; }
+
+    .archive-index {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .archive-thumb {
+      width: 50px; height: 50px;
+      background-color: #e5e2d6;
+      overflow: hidden;
+      border-radius: 50%;
+    }
+
+    .archive-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%);
+      transition: filter 0.3s;
+    }
+
+    .archive-item:hover .archive-thumb img { filter: grayscale(0%); }
+
+    .archive-info { display: flex; flex-direction: column; gap: 3px; }
+
+    .archive-title {
+      font-family: 'Times New Roman', serif;
+      font-size: 16px;
+      font-style: italic;
+      color: var(--ink);
+    }
+
+    .archive-meta {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+    }
+
+    .archive-revenue {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      text-align: right;
+      font-weight: bold;
+      color: var(--terra);
+    }
+
+    /* Archive Detail Panel */
+    .archive-detail {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .archive-detail.active { display: flex; }
+
+    .archive-detail-card {
+      background: var(--paper);
+      max-width: 550px;
+      width: 100%;
+      padding: 2.5rem;
+      position: relative;
+    }
+
+    .archive-detail-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--muted);
+    }
+
+    .archive-detail-header {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      align-items: flex-start;
+    }
+
+    .archive-detail-photo {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .archive-detail-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+    .archive-detail-info h3 {
+      font-family: 'Anton', sans-serif;
+      font-size: 1.8rem;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .archive-detail-info .handle {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--rust);
+      margin-bottom: 0.3rem;
+    }
+
+    .archive-detail-info .product {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .archive-detail-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      padding: 1.25rem;
+      background: var(--paper-dark);
+    }
+
+    .archive-stat-item { text-align: center; }
+    .archive-stat-value { font-family: 'Anton', sans-serif; font-size: 1.5rem; color: var(--terra); }
+    .archive-stat-label { font-family: 'Space Mono', monospace; font-size: 0.6rem; text-transform: uppercase; color: var(--muted); }
+
+    .archive-detail-note {
+      font-family: 'Times New Roman', serif;
+      font-size: 1rem;
+      line-height: 1.5;
+      font-style: italic;
+      border-left: 3px solid var(--rust);
+      padding-left: 1rem;
+    }
+
+    .archive-detail-link {
+      display: inline-block;
+      margin-top: 1.25rem;
+      padding: 0.6rem 1.25rem;
+      background: var(--ink);
+      color: var(--paper);
+      text-decoration: none;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 900px) {
+      .archive-section { grid-template-columns: 1fr; height: auto; min-height: auto; }
+      .archive-featured { height: 35vh; }
+      .archive-list { height: auto; max-height: 60vh; }
+    }
+
+    /* Sponsors section */
     .sponsors-section {
       background: var(--terra);
       border-top: 1.5px solid var(--ink);
@@ -280,72 +819,103 @@
     .sponsor-card {
       background: rgba(255,255,255,0.1);
       border: 1.5px solid rgba(255,255,255,0.2);
-      padding: 2rem 3rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 180px;
+      padding: 1.5rem 2rem;
+      display: flex; align-items: center; justify-content: center;
+      min-width: 160px;
+      min-height: 90px;
       transition: all 0.3s;
     }
     .sponsor-card:hover { background: rgba(255,255,255,0.15); }
-    .sponsor-card a { text-decoration: none; color: var(--paper); }
-    .sponsor-logo { font-family: 'Abril Fatface', serif; font-size: 1.8rem; color: var(--paper); }
+    .sponsor-card a { text-decoration: none; color: var(--paper); display: flex; align-items: center; justify-content: center; }
+    .sponsor-card img {
+      max-width: 100px;
+      max-height: 40px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
 
     .sponsor-cta-card {
       background: transparent;
       border: 2px dashed rgba(255,255,255,0.4);
-      padding: 2rem;
-      min-width: 180px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      padding: 1.5rem;
+      min-width: 160px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
       transition: all 0.3s;
       text-decoration: none;
     }
     .sponsor-cta-card:hover { border-color: var(--paper); background: rgba(255,255,255,0.05); }
-    .sponsor-cta-card .question { font-family: 'Abril Fatface', serif; font-size: 3rem; color: var(--paper); opacity: 0.5; }
-    .sponsor-cta-card .text { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--paper); text-transform: uppercase; margin-top: 0.5rem; }
+    .sponsor-cta-card .question { font-family: 'Abril Fatface', serif; font-size: 2.5rem; color: var(--paper); opacity: 0.5; }
+    .sponsor-cta-card .text { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--paper); text-transform: uppercase; margin-top: 0.5rem; }
 
-    /* Follow Section */
-    .follow-section { text-align: center; padding: 6rem 2rem; background: var(--paper); }
-    .follow-inner { max-width: 600px; margin: 0 auto; }
+    /* Follow Section - Better Design */
+    .follow-section {
+      text-align: center;
+      padding: 5rem 2rem;
+      background: var(--paper);
+      border-top: 1px solid rgba(0,0,0,0.1);
+    }
+    .follow-inner { max-width: 500px; margin: 0 auto; }
 
-    .twitter-embed {
+    .follow-card {
       background: var(--paper-dark);
       border: 1.5px solid var(--ink);
-      padding: 2rem;
-      margin: 2rem auto;
-      max-width: 400px;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
     }
-    .twitter-avatar {
-      width: 80px; height: 80px;
-      border-radius: 50%;
-      background: var(--rust);
-      margin: 0 auto 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Abril Fatface', serif;
-      font-size: 2rem;
-      color: var(--paper);
+
+    .follow-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 4px;
+      background: linear-gradient(90deg, var(--rust), var(--terra));
     }
-    .twitter-handle { font-family: 'Space Mono', monospace; font-size: 1.1rem; color: var(--ink); margin-bottom: 0.5rem; }
-    .twitter-desc { font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.5; }
-    .twitter-btn {
+
+    .follow-avatar {
+      width: 90px; height: 90px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .follow-avatar svg { display: block; }
+
+    .follow-handle {
+      font-family: 'Anton', sans-serif;
+      font-size: 1.8rem;
+      text-transform: uppercase;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+
+    .follow-tagline {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+
+    .follow-btn {
       display: inline-block;
-      padding: 0.75rem 2rem;
+      padding: 0.85rem 2.5rem;
       background: var(--ink);
       color: var(--paper);
       font-family: 'Syne', sans-serif;
       font-weight: 700;
       text-transform: uppercase;
       text-decoration: none;
-      transition: opacity 0.3s;
+      font-size: 0.9rem;
+      transition: all 0.3s;
     }
-    .twitter-btn:hover { opacity: 0.8; }
+    .follow-btn:hover { background: var(--rust); }
 
-    .follow-note { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--muted); margin-top: 2rem; line-height: 1.6; }
+    .follow-note {
+      margin-top: 2rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
 
     /* Footer */
     footer {
@@ -380,280 +950,174 @@
       color: var(--paper);
     }
 
-    /* ==================== MOBILE OPTIMIZATIONS ==================== */
-
-    /* Mobile navigation */
-    @media (max-width: 768px) {
-      nav {
-        padding: 1rem;
-        flex-direction: column;
-        gap: 0.75rem;
-        background: rgba(230,226,214,0.98);
-      }
-      .nav-links {
-        gap: 1rem;
-        font-size: 0.65rem;
-      }
+    /* ========== PRIZE POOL WIDGET ========== */
+    .prize-pool-widget {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 280px;
+      z-index: 90;
     }
 
-    /* Mobile hero */
-    @media (max-width: 768px) {
-      .hero {
-        padding: 6rem 1.5rem 3rem;
-        min-height: auto;
-      }
-      .hero-title {
-        font-size: clamp(3rem, 15vw, 5rem);
-        margin-bottom: 0.5rem;
-      }
+    .prize-svg-filters {
+      position: absolute;
+      width: 0; height: 0;
+      pointer-events: none;
+    }
 
-      /* Reposition data blocks for mobile */
-      .data-block {
+    .prize-container {
+      position: relative;
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      padding: 1.25rem;
+      overflow: hidden;
+      filter: url(#prize-warp);
+    }
+
+    .prize-scanline {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--ink);
+      opacity: 0.1;
+      animation: prize-scan 6s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes prize-scan {
+      0% { top: -10%; }
+      100% { top: 110%; }
+    }
+
+    .prize-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 2rem;
+      line-height: 0.85;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      color: var(--rust);
+      transform: scaleY(1.1);
+      transform-origin: left;
+    }
+
+    .prize-label {
+      font-family: 'Archivo', sans-serif;
+      font-weight: 700;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .prize-value {
+      font-family: 'Anton', sans-serif;
+      font-size: 1.8rem;
+      line-height: 1;
+      margin-bottom: 1rem;
+      color: var(--ink);
+    }
+
+    .prize-breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .prize-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--paper-dark);
+      padding-bottom: 0.4rem;
+    }
+
+    .prize-row-symbol { font-family: 'Anton', sans-serif; font-size: 1rem; color: var(--ink); }
+    .prize-row-name { font-family: 'Archivo', sans-serif; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+    .prize-row-detail { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 0.55rem; text-transform: uppercase; color: var(--terra); }
+
+    .prize-actions { display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
+
+    .prize-blob {
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      height: 40px;
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+      font-family: 'Archivo', sans-serif;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 0.65rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .prize-blob:hover {
+      transform: scale(0.95);
+      border-radius: 50%;
+      background: var(--rust);
+    }
+
+    .prize-specular {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 20;
+      background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.15) 100%);
+      mix-blend-mode: overlay;
+    }
+
+    @media (max-width: 768px) {
+      .prize-pool-widget {
         position: relative;
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
+        bottom: auto;
+        right: auto;
+        width: 100%;
         max-width: 100%;
-        text-align: center;
-        margin-bottom: 1.5rem;
-        font-size: 0.9rem;
+        margin: 0;
+        padding: 2rem;
       }
-      .data-block .value {
-        font-size: 1rem;
-      }
-      .data-tl {
-        order: -1;
-      }
-
-      .date-badge {
-        position: relative;
-        top: auto !important;
-        right: auto !important;
-        text-align: center;
-        margin-top: 2rem;
-      }
-      .date-badge .year {
-        font-size: 2.5rem;
-        display: inline;
-      }
-      .date-badge .quarter {
-        font-size: 0.75rem;
-      }
-
-      .pill-cluster {
-        gap: 8px;
-      }
-      .pill {
-        padding: 6px 14px;
-        font-size: 0.75rem;
-      }
-    }
-
-    /* Mobile video section */
-    @media (max-width: 768px) {
-      .video-section {
-        padding: 2rem 1rem;
-      }
-      .play-btn {
-        width: 60px;
-        height: 60px;
-      }
-      .play-btn svg {
-        width: 24px;
-        height: 24px;
-      }
-    }
-
-    /* Mobile sections */
-    @media (max-width: 768px) {
-      section {
-        padding: 3rem 1.5rem;
-      }
-      h2 {
-        font-size: clamp(1.5rem, 6vw, 2rem);
-      }
-      .section-label {
-        font-size: 0.7rem;
-      }
-    }
-
-    /* Mobile manifesto */
-    @media (max-width: 768px) {
-      .manifesto {
-        padding: 3rem 1.5rem;
-      }
-      .manifesto-text {
-        font-size: 1rem;
-        line-height: 1.7;
-      }
-    }
-
-    /* Mobile builders */
-    @media (max-width: 480px) {
-      .builders-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-      }
-      .builder-photo::after {
-        font-size: 2rem;
-      }
-      .builder-name {
-        font-size: 0.7rem;
-      }
-    }
-
-    /* Mobile how it works */
-    @media (max-width: 768px) {
-      .how-section {
-        padding: 3rem 1.5rem;
-      }
-      .how-grid {
-        gap: 1.5rem;
-        margin-top: 2rem;
-      }
-      .how-card {
-        padding: 1.5rem;
-      }
-      .how-number {
-        font-size: 3rem;
-      }
-      .how-card h3 {
-        font-size: 1.1rem;
-      }
-    }
-
-    /* Mobile token section */
-    @media (max-width: 768px) {
-      .token-section {
-        padding: 3rem 1.5rem;
-      }
-      .token-grid {
-        gap: 2.5rem;
-        margin-top: 2rem;
-      }
-      .pie-container svg {
-        width: 160px;
-        height: 160px;
-      }
-      .pie-legend {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-      }
-      .mechanic {
-        padding-left: 0.75rem;
-        margin-bottom: 1.25rem;
-      }
-      .mechanic h4 {
-        font-size: 0.95rem;
-      }
-      .mechanic p {
-        font-size: 0.85rem;
-      }
-    }
-
-    /* Mobile sponsors */
-    @media (max-width: 768px) {
-      .sponsors-section {
-        padding: 3rem 1.5rem;
-      }
-      .sponsors-amount {
-        font-size: clamp(2rem, 10vw, 3rem);
-      }
-      .sponsors-label {
-        font-size: 0.75rem;
-        margin-bottom: 2rem;
-      }
-      .sponsors-grid {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: stretch;
-      }
-      .sponsor-card,
-      .sponsor-cta-card {
-        min-width: auto;
-        padding: 1.5rem;
-      }
-      .sponsor-logo {
-        font-size: 1.5rem;
-      }
-      .sponsor-cta-card .question {
-        font-size: 2.5rem;
-      }
-    }
-
-    /* Mobile follow section */
-    @media (max-width: 768px) {
-      .follow-section {
-        padding: 3rem 1.5rem;
-      }
-      .twitter-embed {
-        padding: 1.5rem;
-        margin: 1.5rem auto;
-      }
-      .twitter-avatar {
-        width: 60px;
-        height: 60px;
-        font-size: 1.5rem;
-      }
-      .twitter-handle {
-        font-size: 1rem;
-      }
-      .twitter-desc {
-        font-size: 0.85rem;
-      }
-      .twitter-btn {
-        padding: 0.6rem 1.5rem;
-        font-size: 0.9rem;
-      }
-      .follow-note {
-        font-size: 0.75rem;
-      }
-    }
-
-    /* Mobile footer */
-    @media (max-width: 768px) {
-      footer {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-        padding: 1.5rem 1rem;
-      }
-      .footer-brand {
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-    }
-
-    /* Mobile grunge band */
-    @media (max-width: 768px) {
-      .grunge-band {
-        height: 100px;
-      }
-      .grunge-content {
-        left: 1rem;
-        right: 1rem;
-        font-size: 0.65rem;
-      }
-    }
-
-    /* Extra small screens */
-    @media (max-width: 360px) {
-      .hero-title {
-        font-size: 2.5rem;
-      }
-      .nav-links {
-        gap: 0.5rem;
-        font-size: 0.6rem;
-      }
-      .pill {
-        padding: 5px 10px;
-        font-size: 0.65rem;
-      }
+      nav { padding: 1rem; flex-direction: column; gap: 0.75rem; background: rgba(230,226,214,0.98); }
+      .nav-links { gap: 1rem; font-size: 0.65rem; }
+      .hero { padding: 6rem 1.5rem 3rem; min-height: auto; }
+      .hero-title { font-size: clamp(3rem, 15vw, 5rem); margin-bottom: 0.5rem; }
+      .data-block { position: relative; top: auto !important; left: auto !important; right: auto !important; transform: none !important; max-width: 100%; text-align: center; margin-bottom: 1.5rem; background: var(--paper); padding: 1rem; border-top: 2px solid var(--rust); }
+      .data-tl { order: -1; }
+      .date-badge { position: relative; top: auto !important; right: auto !important; text-align: center; margin-top: 2rem; }
+      .date-badge .year { font-size: 2.5rem; display: inline; }
+      .pill { padding: 6px 14px; font-size: 0.75rem; }
+      section { padding: 3rem 1.5rem; }
+      h2 { font-size: clamp(1.5rem, 6vw, 2rem); }
+      .builders-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+      .recommend-form { flex-direction: column; }
+      .recommend-form input { min-width: 100%; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+      .grunge-band { height: 100px; }
+      .grunge-content { left: 1rem; right: 1rem; font-size: 0.65rem; }
     }
   </style>
 </head>
 <body>
   <div id="canvas-container"></div>
+
+  <!-- SVG Filters for Prize Pool -->
+  <svg class="prize-svg-filters">
+    <defs>
+      <filter id="prize-warp">
+        <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="1" result="turbulence" seed="5">
+          <animate attributeName="baseFrequency" dur="15s" values="0.015;0.02;0.015" repeatCount="indefinite" />
+        </feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="4" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </defs>
+  </svg>
 
   <div class="ui-layer">
     <nav>
@@ -664,7 +1128,7 @@
       <div class="nav-links">
         <a href="#manifesto">manifesto</a>
         <a href="#builders">builders</a>
-        <a href="#token">$idea</a>
+        <a href="#protocol">protocol</a>
         <a href="#sponsors">sponsors</a>
       </div>
     </nav>
@@ -672,18 +1136,26 @@
     <!-- Hero -->
     <section class="hero">
       <div class="data-block data-tl">
-        <span class="label">subjects:</span> <span class="value">10</span><br>
-        <span class="label">duration:</span> <span class="value">14 days</span><br>
-        <span class="label">objective:</span> <span class="value">$100k</span><br>
+        <div class="data-row">
+          <span class="label">subjects</span>
+          <span class="value">10 builders</span>
+        </div>
+        <div class="data-row">
+          <span class="label">objective</span>
+          <span class="value">make $100k<br>using AI</span>
+        </div>
+        <div class="data-row">
+          <span class="label">prize</span>
+          <span class="value">$100k bonus</span>
+        </div>
         <div class="status">experiment pending</div>
       </div>
 
       <h1 class="hero-title">idea guys</h1>
 
       <div class="pill-cluster">
-        <a href="#token" class="pill accent">$idea token</a>
         <a href="#builders" class="pill">10 builders</a>
-        <a href="#sponsors" class="pill">become a sponsor</a>
+        <a href="#manifesto" class="pill">the thesis</a>
       </div>
 
       <div class="date-badge">
@@ -710,56 +1182,79 @@
       </div>
     </div>
 
-    <!-- Manifesto -->
-    <section id="manifesto" class="manifesto">
-      <div class="manifesto-content">
-        <div class="section-label">// the thesis</div>
-        <h2>idea guys and the era of speculative entertainment.</h2>
-        <div class="manifesto-text">
-          <p style="margin-bottom: 1.5rem;">
-            <strong>a 1-person, $1 billion company isn't far-fetched anymore.</strong> with AI tools, permissionless distribution, and global markets — the leverage available to a single founder has never been higher. we want to prove it in the shortest time possible.
-          </p>
-          <p style="margin-bottom: 1.5rem;">
-            idea guys is where speculation meets creation. 10 builders. 14 days. a single mission: generate $100,000 in real revenue or be eliminated. no teams. no funding rounds. just raw execution streamed live to the world.
-          </p>
-          <p style="margin-bottom: 1.5rem;">
-            the $idea token transforms passive viewers into active participants. speculate on outcomes. burn tokens to eliminate builders. the audience becomes the invisible hand — shaping who survives through economic action, not votes.
-          </p>
-          <p style="margin-bottom: 1.5rem;">
-            this is <strong>education at the speed of entertainment</strong>. every builder's journey — the wins, the breakdowns, the 3am pivots — becomes a live case study for the next generation of solo founders learning to build 1-person businesses.
-          </p>
-          <p>
-            <strong>we're not predicting the future of work. we're streaming it.</strong>
-          </p>
+    <!-- MANIFESTO - SPLIT SCREEN WITH 4 SECTIONS -->
+    <div id="manifesto" class="manifesto-split">
+      <section class="manifesto-content-rail">
+        <div class="manifesto-item active" data-word="IDEA">
+          <h3>The Thesis</h3>
+          <h2>Speculation Meets Creation</h2>
+          <p>A 1-person, $1 billion company isn't far-fetched anymore. With AI tools, permissionless distribution, and global markets — the leverage available to a single founder has never been higher.</p>
+          <p>We want to prove it in the shortest time possible.</p>
         </div>
-      </div>
-    </section>
+
+        <div class="manifesto-item" data-word="EXEC">
+          <h3>The Mission</h3>
+          <h2>10 Builders.<br>One Goal.</h2>
+          <p>Idea Guys is where speculation meets creation. 10 builders enter. A single mission: <span class="highlight">generate $100,000 in real revenue</span> using AI or be eliminated.</p>
+          <p>First to hit the target wins $100k on top. No teams. No funding rounds. Just raw execution streamed live to the world.</p>
+        </div>
+
+        <div class="manifesto-item" data-word="WATCH">
+          <h3>The Experiment</h3>
+          <h2>The Invisible Hand</h2>
+          <p>The audience transforms from passive viewers into active participants. Watch the journey unfold in real-time. Vote on decisions. Shape who survives.</p>
+          <p>The show continues until someone wins. No scripts. No safety nets. Pure entrepreneurial chaos.</p>
+        </div>
+
+        <div class="manifesto-item" data-word="LIVE">
+          <h3>The Stream</h3>
+          <h2>Education at Speed</h2>
+          <p>This is education at the speed of entertainment. Every builder's journey — the wins, the breakdowns, the 3am pivots — becomes a live case study for the next generation.</p>
+          <p>We're not predicting the future of work. <span class="highlight-rust">We're streaming it.</span></p>
+          <a href="https://x.com/ideaguys_show" target="_blank" class="btn-arena">Enter The Arena</a>
+        </div>
+      </section>
+
+      <aside class="manifesto-type-rail">
+        <div class="mega-type" id="megaType">IDEA</div>
+      </aside>
+    </div>
 
     <!-- Builders -->
-    <section id="builders" class="builders-section">
-      <div class="section-label">// the subjects</div>
-      <h2>10 builders. identities classified.</h2>
-      <p style="color: var(--muted); max-width: 600px;">
-        applications are open. builders will be revealed closer to launch.
-        each enters with $500 and 14 days to prove themselves.
-      </p>
+    <section id="builders" class="builders-section solid-bg">
+      <div class="builders-header">
+        <div class="builders-info">
+          <div class="section-label">// the subjects</div>
+          <h2>10 builders. identities classified.</h2>
+          <p class="builders-desc">applications are open. builders will be revealed closer to launch. each enters with $1,000 and unlimited time to prove themselves.</p>
+        </div>
+      </div>
 
       <div class="builders-grid">
-        <div class="builder-card"><div class="builder-photo"></div><div class="builder-name">subject 01</div><div class="builder-status">tba</div></div>
-        <div class="builder-card"><div class="builder-photo"></div><div class="builder-name">subject 02</div><div class="builder-status">tba</div></div>
-        <div class="builder-card"><div class="builder-photo"></div><div class="builder-name">subject 03</div><div class="builder-status">tba</div></div>
-        <div class="builder-card"><div class="builder-photo"></div><div class="builder-name">subject 04</div><div class="builder-status">tba</div></div>
-        <div class="builder-card"><div class="builder-photo"></div><div class="builder-name">subject 05</div><div class="builder-status">tba</div></div>
-        <div class="builder-card"><div class="builder-photo"></div><div class="builder-name">subject 06</div><div class="builder-status">tba</div></div>
-        <div class="builder-card"><div class="builder-photo"></div><div class="builder-name">subject 07</div><div class="builder-status">tba</div></div>
-        <div class="builder-card"><div class="builder-photo"></div><div class="builder-name">subject 08</div><div class="builder-status">tba</div></div>
-        <div class="builder-card"><div class="builder-photo"></div><div class="builder-name">subject 09</div><div class="builder-status">tba</div></div>
-        <div class="builder-card"><div class="builder-photo"></div><div class="builder-name">subject 10</div><div class="builder-status">tba</div></div>
+        <div class="builder-card"><div class="builder-photo"><div class="builder-glass-overlay"></div></div><div class="builder-name">subject 01</div><div class="builder-status">tba</div></div>
+        <div class="builder-card"><div class="builder-photo"><div class="builder-glass-overlay"></div></div><div class="builder-name">subject 02</div><div class="builder-status">tba</div></div>
+        <div class="builder-card"><div class="builder-photo"><div class="builder-glass-overlay"></div></div><div class="builder-name">subject 03</div><div class="builder-status">tba</div></div>
+        <div class="builder-card"><div class="builder-photo"><div class="builder-glass-overlay"></div></div><div class="builder-name">subject 04</div><div class="builder-status">tba</div></div>
+        <div class="builder-card"><div class="builder-photo"><div class="builder-glass-overlay"></div></div><div class="builder-name">subject 05</div><div class="builder-status">tba</div></div>
+        <div class="builder-card"><div class="builder-photo"><div class="builder-glass-overlay"></div></div><div class="builder-name">subject 06</div><div class="builder-status">tba</div></div>
+        <div class="builder-card"><div class="builder-photo"><div class="builder-glass-overlay"></div></div><div class="builder-name">subject 07</div><div class="builder-status">tba</div></div>
+        <div class="builder-card"><div class="builder-photo"><div class="builder-glass-overlay"></div></div><div class="builder-name">subject 08</div><div class="builder-status">tba</div></div>
+        <div class="builder-card"><div class="builder-photo"><div class="builder-glass-overlay"></div></div><div class="builder-name">subject 09</div><div class="builder-status">tba</div></div>
+        <div class="builder-card"><div class="builder-photo"><div class="builder-glass-overlay"></div></div><div class="builder-name">subject 10</div><div class="builder-status">tba</div></div>
+      </div>
+
+      <div class="recommend-builder">
+        <h3>recommend a builder</h3>
+        <p>know someone who should compete? drop their twitter handle below.</p>
+        <form class="recommend-form" onsubmit="event.preventDefault(); alert('recommendation submitted! we\'ll check them out.');">
+          <input type="text" name="twitter" placeholder="@username" required>
+          <button type="submit">submit</button>
+        </form>
       </div>
     </section>
 
-    <!-- How it works -->
-    <section class="how-section solid-bg">
+    <!-- How it works / Protocol -->
+    <section id="protocol" class="how-section solid-bg">
       <div style="max-width: 1200px; margin: 0 auto;">
         <div class="section-label">// the protocol</div>
         <h2>how it works</h2>
@@ -768,72 +1263,235 @@
           <div class="how-card">
             <div class="how-number">01</div>
             <h3>10 builders enter</h3>
-            <p>solo founders, hackers, and degens compete head-to-head. each has $500 for tools. build anything — ai agents, saas, arbitrage bots, tokenized products. real revenue only.</p>
+            <p>solo founders, hackers, and degens compete head-to-head. each has $1,000 for tools. build anything — ai agents, saas, arbitrage bots, tokenized products. real revenue only.</p>
           </div>
           <div class="how-card">
             <div class="how-number">02</div>
-            <h3>$idea controls fate</h3>
-            <p>the audience holds power. burn 5% of $idea supply against any builder to eliminate them. once threshold hits, they're out. tokens burned forever. no appeals.</p>
+            <h3>audience decides fate</h3>
+            <p>the audience holds power. vote on challenges, watch the streams, and participate in deciding who stays and who goes. the community becomes the producer.</p>
           </div>
           <div class="how-card">
             <div class="how-number">03</div>
-            <h3>$100k or nothing</h3>
-            <p>14 days to hit $100k in real revenue. no fake metrics. no vanity numbers. stripe receipts or gtfo. survival is the only metric that matters.</p>
+            <h3>$100k = $200k</h3>
+            <p>first builder to hit $100k in real revenue wins. they take home $100k bonus on top of what they made. no fake metrics. stripe receipts or gtfo.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Token -->
-    <section id="token" class="token-section solid-bg">
-      <div style="max-width: 1200px; margin: 0 auto;">
-        <div class="section-label">// the mechanism</div>
-        <h2>$idea: burn to eliminate</h2>
-        <p style="color: var(--muted); max-width: 600px; margin-bottom: 2rem;">
-          $idea launches via <strong>noice.so</strong> on <strong>Base</strong>. it's not an investment — it's a 14-day game. the token dies when the show ends. pure speculation. pure power.
-        </p>
+    <!-- AI BUILDERS ARCHIVE - Success Stories -->
+    <div id="proof" class="archive-section">
+      <section class="archive-featured">
+        <div class="archive-slideshow">
+          <img src="https://images.unsplash.com/photo-1629196914375-f7e48f477b6d?q=80&w=2834&auto=format&fit=crop" class="archive-slide" alt="Featured 1">
+          <img src="https://images.unsplash.com/photo-1531169509526-f8f1fdaa4a67?q=80&w=1287&auto=format&fit=crop" class="archive-slide" alt="Featured 2">
+          <img src="https://images.unsplash.com/photo-1706192048400-884d17841d62?q=80&w=1470&auto=format&fit=crop" class="archive-slide" alt="Featured 3">
+        </div>
 
-        <div class="token-grid">
-          <div class="pie-container">
-            <svg viewBox="0 0 100 100" width="200" height="200">
-              <path d="M 50 50 L 50 10 A 40 40 0 0 1 88.28 70 Z" fill="#2A5A42"/>
-              <path d="M 50 50 L 88.28 70 A 40 40 0 0 1 21.72 70 Z" fill="#D4A044"/>
-              <path d="M 50 50 L 21.72 70 A 40 40 0 0 1 10 50 Z" fill="#C85228"/>
-              <path d="M 50 50 L 10 50 A 40 40 0 0 1 21.72 30 Z" fill="#121212"/>
-              <path d="M 50 50 L 21.72 30 A 40 40 0 0 1 50 10 Z" fill="#7a7468"/>
-              <circle cx="50" cy="50" r="20" fill="#E6E2D6"/>
-              <text x="50" y="52" text-anchor="middle" fill="#121212" font-size="6" font-family="Space Mono, monospace">$idea</text>
-            </svg>
-            <div class="pie-legend">
-              <div class="legend-item"><div class="legend-dot" style="background: #2A5A42;"></div><span class="legend-label">public sale</span><span class="legend-value">40%</span></div>
-              <div class="legend-item"><div class="legend-dot" style="background: #D4A044;"></div><span class="legend-label">liquidity</span><span class="legend-value">25%</span></div>
-              <div class="legend-item"><div class="legend-dot" style="background: #C85228;"></div><span class="legend-label">challenges</span><span class="legend-value">20%</span></div>
-              <div class="legend-item"><div class="legend-dot" style="background: #121212;"></div><span class="legend-label">team</span><span class="legend-value">10%</span></div>
-              <div class="legend-item"><div class="legend-dot" style="background: #7a7468;"></div><span class="legend-label">reserve</span><span class="legend-value">5%</span></div>
-            </div>
-          </div>
-
-          <div>
-            <div class="mechanic">
-              <h4>earn through challenges</h4>
-              <p>daily challenges reward $idea to builders and viewers. complete tasks, earn tokens, gain power.</p>
-            </div>
-            <div class="mechanic red">
-              <h4>burn to kick</h4>
-              <p>allocate $idea to any builder's elimination counter. when 5% of supply is reached, they're out. tokens burned permanently.</p>
-            </div>
-            <div class="mechanic amber">
-              <h4>speculate on outcomes</h4>
-              <p>trade $idea on dex. price reflects collective sentiment on who survives, who ships, who gets burned.</p>
-            </div>
-            <div class="mechanic muted">
-              <h4>token dies on day 14</h4>
-              <p>this is explicit. $idea has no utility after the show ends. don't expect anything. play the game.</p>
-            </div>
+        <div class="archive-overlay">
+          <div class="archive-monogram">
+            <div class="crop-mark crop-tl"></div>
+            <div class="crop-mark crop-tr"></div>
+            <div class="crop-mark crop-bl"></div>
+            <div class="crop-mark crop-br"></div>
+            <div class="archive-symbol">proof it<br>works</div>
           </div>
         </div>
+      </section>
+
+      <section class="archive-list">
+        <header class="archive-header">
+          <div class="archive-nav">
+            <nav class="archive-nav-links">
+              <a href="#" class="archive-nav-link active">success stories</a>
+              <a href="#builders" class="archive-nav-link">apply</a>
+            </nav>
+            <div class="archive-ref">REF: IG-S01-26</div>
+          </div>
+
+          <div class="archive-bio">
+            <h2>// Real Builders. Real Revenue.</h2>
+            <p>These founders proved the thesis. Solo builders making millions with AI. No teams. No VC. Just execution.</p>
+            <div class="archive-signature">the precedent exists</div>
+          </div>
+        </header>
+
+        <div class="archive-scroll">
+          <div class="archive-list-header">
+            <span>No.</span>
+            <span></span>
+            <span>Details</span>
+            <span style="text-align: right;">Revenue</span>
+          </div>
+
+          <article class="archive-item" onclick="openDetail('zach')">
+            <div class="archive-index">[001]</div>
+            <div class="archive-thumb"><img src="https://pbs.twimg.com/profile_images/1786477752583208960/EuUjvqPg_400x400.jpg" alt="Zach Yadegari"></div>
+            <div class="archive-info">
+              <span class="archive-title">Zach Yadegari</span>
+              <span class="archive-meta">Cal AI • Calorie Tracker</span>
+              <span class="archive-meta" style="color: #999;">17 years old</span>
+            </div>
+            <div class="archive-revenue">$1M/mo</div>
+          </article>
+
+          <article class="archive-item" onclick="openDetail('pieter')">
+            <div class="archive-index">[002]</div>
+            <div class="archive-thumb"><img src="https://pbs.twimg.com/profile_images/1589756412078555136/YlXMBzhp_400x400.jpg" alt="Pieter Levels"></div>
+            <div class="archive-info">
+              <span class="archive-title">Pieter Levels</span>
+              <span class="archive-meta">PhotoAI • AI Headshots</span>
+              <span class="archive-meta" style="color: #999;">Solo, 0 employees</span>
+            </div>
+            <div class="archive-revenue">$420K/mo</div>
+          </article>
+
+          <article class="archive-item" onclick="openDetail('tony')">
+            <div class="archive-index">[003]</div>
+            <div class="archive-thumb"><img src="https://pbs.twimg.com/profile_images/1587906412319612928/5C5zM4vP_400x400.jpg" alt="Tony Dinh"></div>
+            <div class="archive-info">
+              <span class="archive-title">Tony Dinh</span>
+              <span class="archive-meta">TypingMind • ChatGPT UI</span>
+              <span class="archive-meta" style="color: #999;">Built in 5 days</span>
+            </div>
+            <div class="archive-revenue">$137K/mo</div>
+          </article>
+
+          <article class="archive-item" onclick="openDetail('formula')">
+            <div class="archive-index">[004]</div>
+            <div class="archive-thumb"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=300&fit=crop" alt="Formula Bot"></div>
+            <div class="archive-info">
+              <span class="archive-title">David Bressler</span>
+              <span class="archive-meta">Formula Bot • AI Spreadsheets</span>
+              <span class="archive-meta" style="color: #999;">No code</span>
+            </div>
+            <div class="archive-revenue">$220K/mo</div>
+          </article>
+
+          <article class="archive-item" onclick="openDetail('tweethunter')">
+            <div class="archive-index">[005]</div>
+            <div class="archive-thumb"><img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=300&h=300&fit=crop" alt="Tweet Hunter"></div>
+            <div class="archive-info">
+              <span class="archive-title">Tibo Louis-Lucas</span>
+              <span class="archive-meta">Tweet Hunter • AI Twitter</span>
+              <span class="archive-meta" style="color: #999;">Sold for 8 figs</span>
+            </div>
+            <div class="archive-revenue">$1.4M/yr</div>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <!-- Detail Panels -->
+    <div id="detail-zach" class="archive-detail">
+      <div class="archive-detail-card">
+        <button class="archive-detail-close" onclick="closeDetail('zach')">&times;</button>
+        <div class="archive-detail-header">
+          <div class="archive-detail-photo"><img src="https://pbs.twimg.com/profile_images/1786477752583208960/EuUjvqPg_400x400.jpg" alt="Zach Yadegari"></div>
+          <div class="archive-detail-info">
+            <h3>Zach Yadegari</h3>
+            <div class="handle">@zaborya</div>
+            <div class="product">Cal AI — Calorie Tracking App</div>
+          </div>
+        </div>
+        <div class="archive-detail-stats">
+          <div class="archive-stat-item"><div class="archive-stat-value">$1M</div><div class="archive-stat-label">MRR</div></div>
+          <div class="archive-stat-item"><div class="archive-stat-value">6mo</div><div class="archive-stat-label">To $1M MRR</div></div>
+          <div class="archive-stat-item"><div class="archive-stat-value">17</div><div class="archive-stat-label">Age at Launch</div></div>
+          <div class="archive-stat-item"><div class="archive-stat-value">5M+</div><div class="archive-stat-label">Downloads</div></div>
+        </div>
+        <div class="archive-detail-note">"At 17, Zach launched Cal AI from his parents' home. Users snap a photo of their food and AI estimates calories with 90% accuracy. He met his co-founder on Twitter."</div>
+        <a href="https://x.com/zaborya" target="_blank" class="archive-detail-link">follow on x</a>
       </div>
-    </section>
+    </div>
+
+    <div id="detail-pieter" class="archive-detail">
+      <div class="archive-detail-card">
+        <button class="archive-detail-close" onclick="closeDetail('pieter')">&times;</button>
+        <div class="archive-detail-header">
+          <div class="archive-detail-photo"><img src="https://pbs.twimg.com/profile_images/1589756412078555136/YlXMBzhp_400x400.jpg" alt="Pieter Levels"></div>
+          <div class="archive-detail-info">
+            <h3>Pieter Levels</h3>
+            <div class="handle">@levelsio</div>
+            <div class="product">PhotoAI, Nomad List, Remote OK</div>
+          </div>
+        </div>
+        <div class="archive-detail-stats">
+          <div class="archive-stat-item"><div class="archive-stat-value">$420K</div><div class="archive-stat-label">Monthly</div></div>
+          <div class="archive-stat-item"><div class="archive-stat-value">0</div><div class="archive-stat-label">Employees</div></div>
+          <div class="archive-stat-item"><div class="archive-stat-value">70+</div><div class="archive-stat-label">Failed Projects</div></div>
+          <div class="archive-stat-item"><div class="archive-stat-value">$3M</div><div class="archive-stat-label">Annual</div></div>
+        </div>
+        <div class="archive-detail-note">"After 70 failed startups, Pieter built PhotoAI — an AI that generates professional headshots. $100K in the first 10 days. Zero employees. He codes everything himself."</div>
+        <a href="https://x.com/levelsio" target="_blank" class="archive-detail-link">follow on x</a>
+      </div>
+    </div>
+
+    <div id="detail-tony" class="archive-detail">
+      <div class="archive-detail-card">
+        <button class="archive-detail-close" onclick="closeDetail('tony')">&times;</button>
+        <div class="archive-detail-header">
+          <div class="archive-detail-photo"><img src="https://pbs.twimg.com/profile_images/1587906412319612928/5C5zM4vP_400x400.jpg" alt="Tony Dinh"></div>
+          <div class="archive-detail-info">
+            <h3>Tony Dinh</h3>
+            <div class="handle">@tdinh_me</div>
+            <div class="product">TypingMind — Better ChatGPT UI</div>
+          </div>
+        </div>
+        <div class="archive-detail-stats">
+          <div class="archive-stat-item"><div class="archive-stat-value">$137K</div><div class="archive-stat-label">MRR</div></div>
+          <div class="archive-stat-item"><div class="archive-stat-value">5</div><div class="archive-stat-label">Days to Build</div></div>
+          <div class="archive-stat-item"><div class="archive-stat-value">$22K</div><div class="archive-stat-label">First Week</div></div>
+          <div class="archive-stat-item"><div class="archive-stat-value">130K</div><div class="archive-stat-label">X Followers</div></div>
+        </div>
+        <div class="archive-detail-note">"Tony quit his corporate job after 7 years. Built TypingMind in a weekend because ChatGPT was too slow. Launched on Product Hunt, hit #1. He builds in public on Twitter."</div>
+        <a href="https://x.com/tdinh_me" target="_blank" class="archive-detail-link">follow on x</a>
+      </div>
+    </div>
+
+    <div id="detail-formula" class="archive-detail">
+      <div class="archive-detail-card">
+        <button class="archive-detail-close" onclick="closeDetail('formula')">&times;</button>
+        <div class="archive-detail-header">
+          <div class="archive-detail-photo"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=300&fit=crop" alt="Formula Bot"></div>
+          <div class="archive-detail-info">
+            <h3>David Bressler</h3>
+            <div class="handle">@formulabot</div>
+            <div class="product">Formula Bot — AI for Spreadsheets</div>
+          </div>
+        </div>
+        <div class="archive-detail-stats">
+          <div class="archive-stat-item"><div class="archive-stat-value">$220K</div><div class="archive-stat-label">MRR</div></div>
+          <div class="archive-stat-item"><div class="archive-stat-value">No Code</div><div class="archive-stat-label">Tech</div></div>
+          <div class="archive-stat-item"><div class="archive-stat-value">OpenAI</div><div class="archive-stat-label">API</div></div>
+          <div class="archive-stat-item"><div class="archive-stat-value">Excel</div><div class="archive-stat-label">Platform</div></div>
+        </div>
+        <div class="archive-detail-note">"Formula Bot combines OpenAI's API with Excel — no code required. Type what you want in plain English, get the formula. Simple wrapper, massive market."</div>
+        <a href="https://formulabot.com" target="_blank" class="archive-detail-link">visit site</a>
+      </div>
+    </div>
+
+    <div id="detail-tweethunter" class="archive-detail">
+      <div class="archive-detail-card">
+        <button class="archive-detail-close" onclick="closeDetail('tweethunter')">&times;</button>
+        <div class="archive-detail-header">
+          <div class="archive-detail-photo"><img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=300&h=300&fit=crop" alt="Tweet Hunter"></div>
+          <div class="archive-detail-info">
+            <h3>Tibo Louis-Lucas</h3>
+            <div class="handle">@taborlp</div>
+            <div class="product">Tweet Hunter — AI Twitter Growth</div>
+          </div>
+        </div>
+        <div class="archive-detail-stats">
+          <div class="archive-stat-item"><div class="archive-stat-value">$1.4M</div><div class="archive-stat-label">Annual</div></div>
+          <div class="archive-stat-item"><div class="archive-stat-value">8 Figs</div><div class="archive-stat-label">Exit</div></div>
+          <div class="archive-stat-item"><div class="archive-stat-value">3yrs</div><div class="archive-stat-label">To Exit</div></div>
+          <div class="archive-stat-item"><div class="archive-stat-value">AI</div><div class="archive-stat-label">Tweets</div></div>
+        </div>
+        <div class="archive-detail-note">"Tweet Hunter used AI to help people write better tweets. Launched in 2020, hit $1.4M annual. Sold for 8 figures in 2023. The playbook: solve a problem for the platform you're on."</div>
+        <a href="https://x.com/taborlp" target="_blank" class="archive-detail-link">follow on x</a>
+      </div>
+    </div>
 
     <!-- Sponsors -->
     <section id="sponsors" class="sponsors-section">
@@ -843,12 +1501,12 @@
 
         <div class="sponsors-grid">
           <div class="sponsor-card">
-            <a href="https://noice.so" target="_blank"><span class="sponsor-logo">noice</span></a>
+            <a href="https://noice.so" target="_blank"><img src="noice-logo.svg" alt="noice"></a>
           </div>
           <div class="sponsor-card">
-            <a href="https://localhosthq.com" target="_blank"><span class="sponsor-logo">localhost</span></a>
+            <a href="https://localhosthq.com" target="_blank"><img src="localhost-logo.svg" alt="localhost"></a>
           </div>
-          <a href="https://x.com/heettike" target="_blank" class="sponsor-cta-card">
+          <a href="https://x.com/ideaguys_show" target="_blank" class="sponsor-cta-card">
             <span class="question">?</span>
             <span class="text">this could be you</span>
           </a>
@@ -856,25 +1514,31 @@
       </div>
     </section>
 
-    <!-- Follow Section -->
+    <!-- Follow Section - Improved -->
     <section class="follow-section solid-bg">
       <div class="follow-inner">
-        <div class="section-label">// follow the show</div>
-        <h2>all comms happen here.</h2>
-
-        <div class="twitter-embed">
-          <div class="twitter-avatar">ig</div>
-          <div class="twitter-handle">@ideaguys</div>
-          <div class="twitter-desc">
-            the show will be livestreamed. clips, updates, builder reveals, and all announcements drop here.
+        <div class="follow-card">
+          <div class="follow-avatar">
+            <svg viewBox="0 0 100 100" width="90" height="90">
+              <circle cx="50" cy="50" r="48" fill="#0d0d0d"/>
+              <defs>
+                <radialGradient id="lensGrad" cx="35%" cy="35%">
+                  <stop offset="0%" stop-color="#E8784A"/>
+                  <stop offset="50%" stop-color="#C85228"/>
+                  <stop offset="100%" stop-color="#8B3618"/>
+                </radialGradient>
+              </defs>
+              <circle cx="50" cy="50" r="38" fill="url(#lensGrad)"/>
+              <circle cx="50" cy="50" r="28" fill="#5a2810"/>
+              <circle cx="50" cy="50" r="14" fill="#000"/>
+              <ellipse cx="38" cy="38" rx="8" ry="5" fill="#fff" opacity="0.6" transform="rotate(-30 38 38)"/>
+            </svg>
           </div>
-          <a href="https://x.com/ideaguys" target="_blank" class="twitter-btn">follow on x</a>
+          <div class="follow-handle">@ideaguys_show</div>
+          <div class="follow-tagline">24/7 livestream. daily clips. elimination announcements. builder reveals. everything happens here.</div>
+          <a href="https://x.com/ideaguys_show" target="_blank" class="follow-btn">follow on x</a>
         </div>
-
-        <div class="follow-note">
-          livestream + daily clips + elimination announcements<br>
-          everything happens on x. don't miss it.
-        </div>
+        <div class="follow-note">don't miss the show. all updates, announcements, and drama unfold in real-time on x.</div>
       </div>
     </section>
 
@@ -897,7 +1561,69 @@
     </div>
   </div>
 
+  <!-- Prize Pool Widget -->
+  <div class="prize-pool-widget">
+    <div class="prize-container">
+      <div class="prize-scanline"></div>
+      <div class="prize-title">prize<br>pool</div>
+      <div class="prize-label">total prize</div>
+      <div class="prize-value">$200,000</div>
+      <div class="prize-breakdown">
+        <div class="prize-row">
+          <div><div class="prize-row-symbol">$100K</div><div class="prize-row-name">winner bonus</div></div>
+          <div class="prize-row-detail">on top of revenue</div>
+        </div>
+        <div class="prize-row">
+          <div><div class="prize-row-symbol">$100K</div><div class="prize-row-name">revenue target</div></div>
+          <div class="prize-row-detail">first to hit wins</div>
+        </div>
+        <div class="prize-row">
+          <div><div class="prize-row-symbol">10</div><div class="prize-row-name">builders</div></div>
+          <div class="prize-row-detail">competing</div>
+        </div>
+        <div class="prize-row">
+          <div><div class="prize-row-symbol">$1K</div><div class="prize-row-name">entry fee</div></div>
+          <div class="prize-row-detail">skin in the game</div>
+        </div>
+      </div>
+      <div class="prize-actions">
+        <a href="https://x.com/ideaguys_show" target="_blank" class="prize-blob">follow for updates</a>
+      </div>
+      <div class="prize-specular"></div>
+    </div>
+  </div>
+
   <script>
+    // Detail panel functions
+    function openDetail(id) {
+      document.getElementById('detail-' + id).classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetail(id) {
+      document.getElementById('detail-' + id).classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.archive-detail').forEach(panel => {
+      panel.addEventListener('click', (e) => {
+        if (e.target === panel) {
+          panel.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.archive-detail.active').forEach(panel => {
+          panel.classList.remove('active');
+        });
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Three.js Globe
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xE6E2D6);
@@ -1019,11 +1745,56 @@
     }
     animate();
 
-    window.addEventListener('resize', () => {
+    function updateCameraForScreenSize() {
       camera.aspect = window.innerWidth / window.innerHeight;
+      if (window.innerWidth < 768) {
+        camera.position.z = 18;
+        sphere.position.y = 1;
+      } else {
+        camera.position.z = 12;
+        sphere.position.y = 0;
+      }
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+    }
+
+    window.addEventListener('resize', updateCameraForScreenSize);
+    updateCameraForScreenSize();
+
+    // Manifesto scroll animation
+    const megaType = document.getElementById('megaType');
+    const manifestoItems = document.querySelectorAll('.manifesto-item');
+    const manifestoRail = document.querySelector('.manifesto-content-rail');
+
+    if (manifestoRail) {
+      manifestoRail.addEventListener('scroll', updateManifestoState);
+      window.addEventListener('scroll', updateManifestoState);
+    }
+
+    function updateManifestoState() {
+      manifestoItems.forEach((item) => {
+        const rect = item.getBoundingClientRect();
+        const center = window.innerHeight / 2;
+
+        if (rect.top < center && rect.bottom > center) {
+          item.classList.add('active');
+          const newWord = item.getAttribute('data-word');
+          if (megaType && megaType.innerText !== newWord) {
+            megaType.style.opacity = 0;
+            setTimeout(() => {
+              megaType.innerText = newWord;
+              megaType.style.opacity = 1;
+            }, 200);
+          }
+        } else {
+          item.classList.remove('active');
+        }
+      });
+    }
+
+    if (manifestoItems.length > 0) {
+      manifestoItems[0].classList.add('active');
+    }
   </script>
 </body>
 </html>

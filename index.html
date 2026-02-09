@@ -21,6 +21,8 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
 
+    html { scroll-behavior: smooth; }
+
     body {
       background-color: var(--paper);
       color: var(--ink);
@@ -62,7 +64,7 @@
       border-bottom: 1px solid rgba(0,0,0,0.05);
     }
 
-    .brand { display: flex; align-items: center; gap: 8px; }
+    .brand { display: flex; align-items: center; gap: 8px; white-space: nowrap; min-width: 0; overflow: hidden; }
     .status-dot {
       width: 8px; height: 8px;
       background: var(--rust);
@@ -79,6 +81,68 @@
     .nav-links a { color: var(--muted); text-decoration: none; transition: color 0.3s; }
     .nav-links a:hover { color: var(--ink); }
 
+    /* Hamburger menu button */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 28px;
+      min-width: 28px;
+      height: 28px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 110;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+    .menu-toggle span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background: var(--ink);
+      transition: all 0.3s ease;
+      transform-origin: center;
+    }
+    .menu-toggle.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .menu-toggle.active span:nth-child(2) { opacity: 0; }
+    .menu-toggle.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile nav overlay */
+    .mobile-nav-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(230,226,214,0.98);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 99;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .mobile-nav-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .mobile-nav-overlay a {
+      font-family: 'Anton', sans-serif;
+      font-size: 2rem;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color 0.3s;
+    }
+    .mobile-nav-overlay a:hover { color: var(--rust); }
+
     /* Hero */
     .hero {
       min-height: 100vh;
@@ -91,6 +155,25 @@
       position: relative;
     }
 
+    /* Radial fade overlay so globe doesn't overpower center content */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(230,226,214,0.85) 0%, rgba(230,226,214,0.4) 50%, transparent 80%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .hero > * { position: relative; z-index: 2; }
+
+    .hero-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
     .hero-title {
       font-family: 'Abril Fatface', serif;
       font-size: clamp(4rem, 12vw, 14rem);
@@ -98,7 +181,15 @@
       letter-spacing: -0.04em;
       margin-bottom: 1rem;
       color: var(--ink);
-      mix-blend-mode: multiply;
+    }
+
+    .hero-subtitle {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
     }
 
     .pill-cluster {
@@ -106,7 +197,7 @@
       gap: 12px;
       flex-wrap: wrap;
       justify-content: center;
-      margin-top: 1rem;
+      margin-top: 0.5rem;
     }
 
     .pill {
@@ -125,70 +216,92 @@
     }
     .pill:hover { background: var(--ink); color: var(--paper); box-shadow: 1px 1px 0 var(--ink); transform: translate(2px, 2px); }
 
-    .data-block {
-      position: absolute;
-      font-family: 'Space Mono', monospace;
-      font-size: 0.8rem;
-      line-height: 2;
-      color: var(--ink);
-      max-width: 220px;
+    /* Hero metadata strip below center */
+    .hero-meta {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 3rem;
+      padding: 1.25rem 2rem;
+      background: rgba(230,226,214,0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(0,0,0,0.08);
     }
-    .data-block .data-row { margin-bottom: 0.75rem; }
-    .data-block .label { color: var(--muted); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; display: block; }
-    .data-block .value { color: var(--ink); font-weight: bold; font-size: 0.85rem; display: block; margin-top: 0.1rem; }
-    .data-block .status {
-      margin-top: 1rem;
-      padding: 5px 12px;
+    .hero-meta-item {
+      font-family: 'Space Mono', monospace;
+      text-align: center;
+    }
+    .hero-meta-item .label {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+    .hero-meta-item .value {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--ink);
+      display: block;
+    }
+    .hero-meta-item .value.accent { color: var(--rust); }
+
+    .hero-status {
+      margin-top: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .hero-status .status-badge {
+      padding: 5px 14px;
       border: 1.5px solid var(--gold);
       color: var(--gold);
-      display: inline-block;
+      font-family: 'Space Mono', monospace;
       font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
-    .data-tl { top: 50%; left: 2rem; transform: translateY(-50%); text-align: left; }
-
-    .date-badge { position: absolute; top: 20%; right: 3%; text-align: right; }
-    .date-badge .year { font-family: 'Abril Fatface', serif; font-size: 3rem; color: var(--ink); line-height: 0.9; }
-    .date-badge .quarter { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--terra); text-transform: uppercase; letter-spacing: 0.1em; }
+    .hero-status .launch-date {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--terra);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .hero-status .launch-date strong {
+      font-family: 'Abril Fatface', serif;
+      font-size: 1.4rem;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin-left: 0.25rem;
+    }
 
     /* ========== HERO RESPONSIVE ========== */
     @media (min-width: 1400px) {
       .hero-title { font-size: 14rem; }
-      .data-block { font-size: 0.85rem; max-width: 260px; }
-      .data-tl { left: 3rem; }
-      .date-badge { right: 4%; }
-      .date-badge .year { font-size: 4rem; }
+      .hero-meta { gap: 3.5rem; padding: 1.5rem 3rem; }
     }
 
     @media (max-width: 1024px) {
       .hero-title { font-size: clamp(3.5rem, 11vw, 10rem); }
-      .data-block { font-size: 0.75rem; max-width: 200px; }
-      .date-badge .year { font-size: 2.5rem; }
+      .hero-meta { gap: 2rem; }
     }
 
     @media (max-width: 768px) {
-      .hero { justify-content: flex-start; padding-top: 6rem; min-height: auto; padding-bottom: 2rem; }
-      .hero-title { font-size: clamp(3rem, 15vw, 5rem); margin-bottom: 0.5rem; }
-      .data-block {
-        position: relative;
-        top: auto !important; left: auto !important; right: auto !important;
-        transform: none !important;
-        max-width: 100%;
-        text-align: center;
-        margin-bottom: 1.5rem;
-        background: var(--paper);
-        padding: 1rem;
-        border-top: 2px solid var(--rust);
+      .hero::before {
+        background: radial-gradient(ellipse 80% 60% at 50% 45%, rgba(230,226,214,0.9) 0%, rgba(230,226,214,0.5) 55%, transparent 85%);
       }
-      .data-tl { order: -1; }
-      .date-badge {
-        position: relative;
-        top: auto !important; right: auto !important;
-        text-align: center;
-        margin-top: 1.5rem;
+      .hero-meta {
+        flex-wrap: wrap;
+        gap: 1rem 1.5rem;
+        justify-content: center;
+        padding: 1rem 1.25rem;
       }
-      .date-badge .year { font-size: 2rem; display: inline; }
+      .hero-status {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
       .pill { padding: 6px 16px; font-size: 0.75rem; }
     }
 
@@ -437,9 +550,10 @@
 
     @media (max-width: 900px) {
       .manifesto-split { flex-direction: column-reverse; }
-      .manifesto-content-rail { width: 100%; padding: 2rem 1.5rem; }
+      .manifesto-content-rail { width: 100%; padding: 2.5rem 2rem; }
       .manifesto-type-rail { position: relative; width: 100%; height: 30vh; }
       .mega-type { font-size: 20vh; transform: rotate(0) scaleY(1.3); }
+      .manifesto-item { min-height: 40vh; }
     }
 
     /* Section base */
@@ -718,13 +832,31 @@
       color: var(--paper);
     }
 
-    /* ========== PRIZE POOL WIDGET ========== */
+    /* ========== PRIZE POOL WIDGET (fixed on desktop) ========== */
     .prize-pool-widget {
       position: fixed;
       bottom: 2rem;
       right: 2rem;
       width: 280px;
       z-index: 90;
+    }
+
+    /* ========== PRIZE POOL INLINE (mobile) ========== */
+    .prize-pool-inline {
+      display: none;
+      background: var(--paper-dark);
+      border-top: 1.5px solid var(--ink);
+      border-bottom: 1.5px solid var(--ink);
+    }
+    .prize-pool-inline .prize-inline-inner {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    .prize-pool-inline .prize-container {
+      filter: none;
+      border: 2px solid var(--ink);
+      background: var(--paper);
     }
 
     .prize-svg-filters {
@@ -844,25 +976,93 @@
 
     /* ========== GLOBAL MOBILE OVERRIDES ========== */
     @media (max-width: 768px) {
-      .prize-pool-widget {
-        position: relative;
-        bottom: auto;
-        right: auto;
-        width: 100%;
-        max-width: 100%;
-        margin: 0;
-        padding: 2rem;
-      }
-      nav { padding: 1rem; background: rgba(230,226,214,0.92); }
-      .nav-links { gap: 1.5rem; font-size: 0.65rem; }
+      /* Nav */
+      nav { padding: 1rem 1rem; background: rgba(230,226,214,0.95); gap: 1rem; }
+      .nav-links { display: none; }
+      .menu-toggle { display: flex; }
+      .mobile-nav-overlay { display: flex; }
+      .brand span { font-size: 0.65rem; overflow: hidden; text-overflow: ellipsis; }
+
+      /* Prize pool: hide fixed, show inline */
+      .prize-pool-widget { display: none; }
+      .prize-pool-inline { display: block; }
+
+      /* Sections */
       section { padding: 3rem 1.5rem; }
       h2 { font-size: clamp(1.5rem, 6vw, 2rem); }
+
+      /* Hero */
+      .hero { padding-top: 6rem; min-height: 100vh; padding-bottom: 2rem; }
+      .hero-title { font-size: clamp(3rem, 16vw, 5.5rem); margin-bottom: 0.5rem; }
+      .hero-subtitle { font-size: 0.9rem; }
+
+      /* Manifesto */
+      .manifesto-split { flex-direction: column-reverse; }
+      .manifesto-content-rail { width: 100%; padding: 2rem 1.5rem; }
+      .manifesto-type-rail { position: relative; width: 100%; height: 25vh; }
+      .mega-type { font-size: 18vh; transform: rotate(0) scaleY(1.3); }
+      .manifesto-item { min-height: auto; padding-left: 1.5rem; margin-bottom: 3rem; }
+      .manifesto-item p { font-size: 0.95rem; max-width: 100%; }
+      .manifesto-item h2 { font-size: clamp(1.5rem, 6vw, 2.2rem); }
+
+      /* Proof builders */
+      .proof-builder { gap: 0.75rem; padding: 0.6rem; }
+      .proof-avatar { width: 32px; height: 32px; }
+      .proof-name { font-size: 0.8rem; }
+      .proof-revenue { font-size: 0.85rem; }
+
+      /* Builders */
       .builders-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+      .builder-photo::after { font-size: 2rem; }
+      .builder-name { font-size: 0.7rem; }
+
+      /* Recommend form */
+      .recommend-builder { padding: 1.5rem; }
       .recommend-form { flex-direction: column; }
       .recommend-form input { min-width: 100%; }
-      footer { flex-direction: column; gap: 1rem; text-align: center; }
-      .grunge-band { height: 100px; }
-      .grunge-content { left: 1rem; right: 1rem; font-size: 0.65rem; }
+
+      /* Sponsors */
+      .sponsors-section { padding: 3rem 1.5rem; }
+      .sponsors-grid { gap: 1rem; }
+      .sponsor-card { min-width: 120px; min-height: 70px; padding: 1rem; }
+      .sponsor-cta-card { min-width: 120px; padding: 1rem; }
+      .sponsor-cta-card .question { font-size: 1.8rem; }
+
+      /* Video */
+      .video-section { padding: 2rem 1rem; }
+      .play-btn { width: 60px; height: 60px; }
+      .play-btn svg { width: 22px; height: 22px; }
+
+      /* Follow */
+      .follow-section { padding: 3rem 1.5rem; }
+      .follow-card { padding: 1.5rem; }
+      .follow-handle { font-size: 1.4rem; }
+      .follow-tagline { font-size: 0.85rem; }
+
+      /* Footer */
+      footer { flex-direction: column; gap: 1rem; text-align: center; padding: 1.5rem 1rem; }
+      footer .footer-brand { justify-content: center; flex-wrap: wrap; }
+      .grunge-band { height: 80px; }
+      .grunge-content { left: 1rem; right: 1rem; font-size: 0.6rem; }
+
+      /* General text */
+      .btn-arena { font-size: 1.1rem; padding: 0.85rem 2rem; }
+    }
+
+    /* ========== EXTRA SMALL SCREENS ========== */
+    @media (max-width: 400px) {
+      nav { padding: 0.75rem 0.75rem; }
+      .brand span { font-size: 0.6rem; }
+      .hero-title { font-size: clamp(2.2rem, 14vw, 3.5rem); }
+      .hero-subtitle { font-size: 0.8rem; }
+      .hero-meta { gap: 0.75rem 1rem; padding: 0.75rem 1rem; }
+      .hero-meta-item .value { font-size: 0.75rem; }
+      .hero-meta-item .label { font-size: 0.55rem; }
+      .pill { padding: 5px 12px; font-size: 0.7rem; }
+      .builders-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+      .manifesto-item h2 { font-size: clamp(1.3rem, 5.5vw, 1.8rem); }
+      .manifesto-item p { font-size: 0.85rem; }
+      .sponsors-amount { font-size: clamp(2rem, 10vw, 3rem); }
     }
   </style>
 </head>
@@ -892,37 +1092,53 @@
         <a href="#builders">builders</a>
         <a href="#sponsors">sponsors</a>
       </div>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </nav>
+
+    <!-- Mobile Nav Overlay -->
+    <div class="mobile-nav-overlay" id="mobileNav">
+      <a href="#manifesto" onclick="closeMobileNav()">manifesto</a>
+      <a href="#builders" onclick="closeMobileNav()">builders</a>
+      <a href="#sponsors" onclick="closeMobileNav()">sponsors</a>
+    </div>
 
     <!-- Hero -->
     <section class="hero">
-      <div class="data-block data-tl">
-        <div class="data-row">
+      <div class="hero-center">
+        <h1 class="hero-title">idea guys</h1>
+        <p class="hero-subtitle">10 builders. one mission. make $100k using AI — or get eliminated. streamed live to the world.</p>
+        <div class="pill-cluster">
+          <a href="#builders" class="pill">10 builders</a>
+          <a href="#manifesto" class="pill">the thesis</a>
+        </div>
+      </div>
+
+      <div class="hero-meta">
+        <div class="hero-meta-item">
           <span class="label">subjects</span>
           <span class="value">10 builders</span>
         </div>
-        <div class="data-row">
+        <div class="hero-meta-item">
           <span class="label">objective</span>
-          <span class="value">make $100k<br>using AI</span>
+          <span class="value">$100k revenue</span>
         </div>
-        <div class="data-row">
+        <div class="hero-meta-item">
           <span class="label">prize</span>
-          <span class="value">$100k bonus</span>
+          <span class="value accent">$100k bonus</span>
         </div>
-        <div class="status">experiment pending</div>
+        <div class="hero-meta-item">
+          <span class="label">entry</span>
+          <span class="value">$1,000</span>
+        </div>
       </div>
 
-      <h1 class="hero-title">idea guys</h1>
-
-      <div class="pill-cluster">
-        <a href="#builders" class="pill">10 builders</a>
-        <a href="#manifesto" class="pill">the thesis</a>
-      </div>
-
-      <div class="date-badge">
-        <div class="quarter">launching</div>
-        <div class="year">Q2</div>
-        <div class="year">2026</div>
+      <div class="hero-status">
+        <div class="status-badge">experiment pending</div>
+        <div class="launch-date">launching<strong> Q2 2026</strong></div>
       </div>
     </section>
 
@@ -1086,6 +1302,39 @@
       </div>
     </section>
 
+    <!-- Prize Pool Inline (mobile only) -->
+    <div class="prize-pool-inline">
+      <div class="prize-inline-inner">
+        <div class="prize-container">
+          <div class="prize-scanline"></div>
+          <div class="prize-title">prize<br>pool</div>
+          <div class="prize-label">total prize</div>
+          <div class="prize-value">$200,000</div>
+          <div class="prize-breakdown">
+            <div class="prize-row">
+              <div><div class="prize-row-symbol">$100K</div><div class="prize-row-name">winner bonus</div></div>
+              <div class="prize-row-detail">on top of revenue</div>
+            </div>
+            <div class="prize-row">
+              <div><div class="prize-row-symbol">$100K</div><div class="prize-row-name">revenue target</div></div>
+              <div class="prize-row-detail">first to hit wins</div>
+            </div>
+            <div class="prize-row">
+              <div><div class="prize-row-symbol">10</div><div class="prize-row-name">builders</div></div>
+              <div class="prize-row-detail">competing</div>
+            </div>
+            <div class="prize-row">
+              <div><div class="prize-row-symbol">$1K</div><div class="prize-row-name">entry fee</div></div>
+              <div class="prize-row-detail">skin in the game</div>
+            </div>
+          </div>
+          <div class="prize-actions">
+            <a href="https://x.com/ideaguys_show" target="_blank" class="prize-blob">follow for updates</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Footer -->
     <footer>
       <div class="footer-brand">
@@ -1138,6 +1387,22 @@
   </div>
 
   <script>
+    // Mobile nav toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileNav = document.getElementById('mobileNav');
+
+    menuToggle.addEventListener('click', () => {
+      menuToggle.classList.toggle('active');
+      mobileNav.classList.toggle('open');
+      document.body.style.overflow = mobileNav.classList.contains('open') ? 'hidden' : '';
+    });
+
+    function closeMobileNav() {
+      menuToggle.classList.remove('active');
+      mobileNav.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
     // Three.js Globe
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();

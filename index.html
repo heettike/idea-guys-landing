@@ -179,17 +179,37 @@
       font-size: clamp(4rem, 12vw, 14rem);
       line-height: 0.9;
       letter-spacing: -0.04em;
-      margin-bottom: 1rem;
+      margin-bottom: 2rem;
       color: var(--ink);
     }
 
-    .hero-subtitle {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(0.95rem, 1.5vw, 1.15rem);
-      color: var(--muted);
-      max-width: 480px;
-      line-height: 1.5;
-      margin-bottom: 1.5rem;
+    /* Ticker strip pinned below navbar */
+    .ticker-strip {
+      background: var(--ink);
+      overflow: hidden;
+      white-space: nowrap;
+      position: fixed;
+      left: 0;
+      right: 0;
+      z-index: 99;
+      top: var(--nav-height, 52px);
+    }
+    .ticker-track {
+      display: inline-flex;
+      animation: ticker-scroll 20s linear infinite;
+    }
+    .ticker-text {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(0.65rem, 1.2vw, 0.8rem);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--paper);
+      padding: 0.6rem 0;
+      display: inline-block;
+    }
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
 
     .pill-cluster {
@@ -197,7 +217,7 @@
       gap: 12px;
       flex-wrap: wrap;
       justify-content: center;
-      margin-top: 0.5rem;
+      margin-top: 1.5rem;
     }
 
     .pill {
@@ -261,6 +281,9 @@
       font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      background: rgba(230,226,214,0.9);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
     }
     .hero-status .launch-date {
       font-family: 'Space Mono', monospace;
@@ -994,7 +1017,6 @@
       /* Hero */
       .hero { padding-top: 6rem; min-height: 100vh; padding-bottom: 2rem; }
       .hero-title { font-size: clamp(3rem, 16vw, 5.5rem); margin-bottom: 0.5rem; }
-      .hero-subtitle { font-size: 0.9rem; }
 
       /* Manifesto */
       .manifesto-split { flex-direction: column-reverse; }
@@ -1054,7 +1076,6 @@
       nav { padding: 0.75rem 0.75rem; }
       .brand span { font-size: 0.6rem; }
       .hero-title { font-size: clamp(2.2rem, 14vw, 3.5rem); }
-      .hero-subtitle { font-size: 0.8rem; }
       .hero-meta { gap: 0.75rem 1rem; padding: 0.75rem 1rem; }
       .hero-meta-item .value { font-size: 0.75rem; }
       .hero-meta-item .label { font-size: 0.55rem; }
@@ -1106,11 +1127,18 @@
       <a href="#sponsors" onclick="closeMobileNav()">sponsors</a>
     </div>
 
+    <!-- Ticker Strip -->
+    <div class="ticker-strip">
+      <div class="ticker-track">
+        <span class="ticker-text">10 builders &bull; one mission &bull; make $100k using AI — or get eliminated &bull; streamed live to the world &bull;&nbsp;</span>
+        <span class="ticker-text">10 builders &bull; one mission &bull; make $100k using AI — or get eliminated &bull; streamed live to the world &bull;&nbsp;</span>
+      </div>
+    </div>
+
     <!-- Hero -->
     <section class="hero">
       <div class="hero-center">
         <h1 class="hero-title">idea guys</h1>
-        <p class="hero-subtitle">10 builders. one mission. make $100k using AI — or get eliminated. streamed live to the world.</p>
         <div class="pill-cluster">
           <a href="#builders" class="pill">10 builders</a>
           <a href="#manifesto" class="pill">the thesis</a>
@@ -1387,6 +1415,16 @@
   </div>
 
   <script>
+    // Position ticker below nav
+    function setNavHeight() {
+      const navEl = document.querySelector('nav');
+      if (navEl) {
+        document.documentElement.style.setProperty('--nav-height', navEl.offsetHeight + 'px');
+      }
+    }
+    setNavHeight();
+    window.addEventListener('resize', setNavHeight);
+
     // Mobile nav toggle
     const menuToggle = document.getElementById('menuToggle');
     const mobileNav = document.getElementById('mobileNav');
